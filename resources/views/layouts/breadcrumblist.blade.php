@@ -316,6 +316,24 @@
       <li class="breadcrumb-item"><a href="{{route('employeeproductionreport')}}" class="breadcrumb-link breadcumpfont">Employee Production</a></li>
     </ol>
 
+    @elseif(request()->route()->getName() == 'tasks')
+    <ol class="breadcrumb custom-breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ route('employeemanagementdashboard')}}" class="breadcrumb-link breadcumpfont">Employee Management</a></li>
+      <li class="breadcrumb-item"><a href="#" class="breadcrumb-link breadcumpfont">Daily Tasks</a></li>
+      <li class="breadcrumb-item"><a href="{{route('tasks')}}" class="breadcrumb-link breadcumpfont">Tasks</a></li>
+    </ol>
+    @elseif(request()->route()->getName() == 'taskallocation')
+    <ol class="breadcrumb custom-breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ route('employeemanagementdashboard')}}" class="breadcrumb-link breadcumpfont">Employee Management</a></li>
+      <li class="breadcrumb-item"><a href="#" class="breadcrumb-link breadcumpfont">Daily Tasks</a></li>
+      <li class="breadcrumb-item"><a href="{{route('taskallocation')}}" class="breadcrumb-link breadcumpfont">Tasks Allocation</a></li>
+    </ol>
+    @elseif(request()->route()->getName() == 'taskending')
+    <ol class="breadcrumb custom-breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ route('employeemanagementdashboard')}}" class="breadcrumb-link breadcumpfont">Employee Management</a></li>
+      <li class="breadcrumb-item"><a href="#" class="breadcrumb-link breadcumpfont">Daily Tasks</a></li>
+      <li class="breadcrumb-item"><a href="{{route('taskending')}}" class="breadcrumb-link breadcumpfont">Tasks Ending</a></li>
+    </ol>
 {{-- Attendance and leave breadcrump list --}}
 
 

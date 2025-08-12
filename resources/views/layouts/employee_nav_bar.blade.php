@@ -100,6 +100,17 @@
         </ul>
   </div>
 
+  <div class="dropdown">
+    <a  role="button" data-toggle="dropdown" class="btn navbtncolor" data-target="#" href="#" id="dailytask">
+      Daily Task Process <span class="caret"></span></a>
+        <ul class="dropdown-menu multi-level dropdownmenucolor" role="menu" aria-labelledby="dropdownMenu">
+          
+            <li><a class="dropdown-item" href="{{ route('tasks')}}">Tasks</a></li>
+            <li><a class="dropdown-item" href="{{ route('taskallocation')}}">Employee Task Allocation</a></li>
+            <li><a class="dropdown-item" href="{{ route('taskending')}}">Daily Task Ending</a></li>
+
+        </ul>
+  </div>
 
   @if(auth()->user()->can('pe-task-list'))
   <div class="dropdown">

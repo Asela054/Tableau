@@ -1381,6 +1381,42 @@ Route::post('no_pay_days_data',['uses' => 'RptNopayController@no_pay_days_data',
 Route::get('employee_list_production', 'ProductionEndingController@employee_list_production')->name('employee_list_production');
 Route::get('/employeeproductionreport' ,'ProductionEndingController@employeeproduction')->name('employeeproductionreport');
 
+// NDA Letter Routes
+Route::get('NDAletter', 'NDAletterController@index')->name('NDAletter');
+Route::post('NDAletterinsert', 'NDAletterController@insert')->name('NDAletterinsert');
+Route::get('NDAletterlist', 'NDAletterController@letterlist')->name('NDAletterlist');
+Route::post('NDAletteredit', 'NDAletterController@edit')->name('NDAletteredit');
+Route::get('/NDAletterstatus/{id}/{status}','NDAletterController@status')->name('NDAletterstatus');
+Route::post('NDAletterdelete', 'NDAletterController@delete')->name('NDAletterdelete');
+Route::post('NDAletterprintdata', 'NDAletterPDFController@printdata')->name('NDAletterprintdata');
+Route::get('NDAlettergetdepartmentfilter/{categoryId}', 'NDAletterController@getdepartmentfilter')->name('NDAlettergetdepartmentfilter');
+Route::get('NDAlettergetemployeefilter/{categoryId}', 'NDAletterController@getemployeefilter')->name('NDAlettergetemployeefilter');
+
+// Task Controller Routes
+Route::resource('Task', 'TaskController');
+Route::get('tasks', 'TaskController@index')->name('tasks');
+Route::post('addTask',['uses' => 'TaskController@store', 'as' => 'addTask']); 
+Route::post('Task/update', 'TaskController@update')->name('Task.update');
+Route::get('Task/destroy/{id}', 'TaskController@destroy');
+
+// Task Allocation Controller Routes
+Route::get('taskallocation', 'TaskEmployeeAllocationController@index')->name('taskallocation');
+Route::get('/taskallocationlist' ,'TaskEmployeeAllocationController@requestlist')->name('taskallocationlist');
+Route::post('/taskallocationinsert' ,'TaskEmployeeAllocationController@insert')->name('taskallocationinsert');
+Route::post('/taskallocationedit' ,'TaskEmployeeAllocationController@edit')->name('taskallocationedit');
+Route::post('/taskallocationview' ,'TaskEmployeeAllocationController@view')->name('taskallocationview');
+Route::post('/taskallocationeditdetails' ,'TaskEmployeeAllocationController@editlist')->name('taskallocationeditdetails');
+Route::post('/taskallocationupdate' ,'TaskEmployeeAllocationController@update')->name('taskallocationupdate');
+Route::post('/taskallocationdelete' ,'TaskEmployeeAllocationController@delete')->name('taskallocationdelete');
+Route::post('/taskallocationdeletelist' ,'TaskEmployeeAllocationController@deletelist')->name('taskallocationdeletelist');
+Route::get('/taskallocationstatus/{id}/{stasus}','TaskEmployeeAllocationController@status')->name('taskallocationstatus');
+
+// Task ending Controller Routes
+Route::get('taskending', 'TaskEndingController@index')->name('taskending');
+Route::get('/taskendinglist' ,'TaskEndingController@tasklist')->name('taskendinglist');
+Route::post('/taskendingfinish' ,'TaskEndingController@insert')->name('taskendingfinish');
+Route::post('/taskendingcancel' ,'TaskEndingController@canceltask')->name('taskendingcancel');
+
 Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');
     Artisan::call('config:clear');
