@@ -10,6 +10,7 @@ use Auth;
 use Carbon\Carbon;
 use Datatables;
 use DB;
+use Illuminate\Support\Facades\Input;
 
 class TaskEndingController extends Controller
 {
@@ -176,6 +177,65 @@ class TaskEndingController extends Controller
 
         return response()->json(['success' => 'Task Successfully Canceled']);
 
+    }
+
+    public function employeetask()
+    {
+        $user = Auth::user();
+        $permission = $user->can('task-ending-list');
+        if (!$permission) {
+            return response()->json(['error' => 'UnAuthorized'], 401);
+        }
+
+        $tasks = DB::table('task')
+            ->select('id', 'taskname')
+            ->get();
+
+        return view('Daily_Task.employee_task', compact('tasks'));
+    }
+
+
+     public function employee_list_task(Request $request)
+    {
+        if ($request->ajax())
+        {
+            $page = Input::get('page');
+            $resultCount = 25;
+            $offset = ($page - 1) * $resultCount;
+            $term = Input::get("term");
+
+            $query = DB::table('employees')
+                ->where(function($q) use ($term) {
+                    $q->where('employees.calling_name', 'LIKE', '%' . $term . '%')
+                    ->orWhere('employees.emp_name_with_initial', 'LIKE', '%' . $term . '%');
+                })
+                ->where('deleted', 0)
+                ->where('is_resigned', 0);
+
+            $breeds = $query
+                ->select(
+                    DB::raw('DISTINCT employees.emp_id as id'),
+                    DB::raw('CONCAT(employees.emp_name_with_initial, " - ", employees.calling_name) as text')
+                )
+                ->orderBy('employees.emp_name_with_initial')
+                ->skip($offset)
+                ->take($resultCount)
+                ->get();
+
+            $count = Count($breeds); // Get count from the actual results
+
+            $endCount = $offset + $resultCount;
+            $morePages = $endCount < $count;
+
+            $results = [
+                "results" => $breeds,
+                "pagination" => [
+                    "more" => $morePages
+                ]
+            ];
+
+            return response()->json($results);
+        }
     }
 
 }

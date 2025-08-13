@@ -1416,6 +1416,8 @@ Route::get('taskending', 'TaskEndingController@index')->name('taskending');
 Route::get('/taskendinglist' ,'TaskEndingController@tasklist')->name('taskendinglist');
 Route::post('/taskendingfinish' ,'TaskEndingController@insert')->name('taskendingfinish');
 Route::post('/taskendingcancel' ,'TaskEndingController@canceltask')->name('taskendingcancel');
+Route::get('employee_list_task', 'TaskEndingController@employee_list_task')->name('employee_list_task');
+Route::get('/employeetaskreport' ,'TaskEndingController@employeetask')->name('employeetaskreport');
 
 Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');
