@@ -108,6 +108,7 @@
             <li><a class="dropdown-item" href="{{ route('tasks')}}">Tasks</a></li>
             <li><a class="dropdown-item" href="{{ route('taskallocation')}}">Employee Task Allocation</a></li>
             <li><a class="dropdown-item" href="{{ route('taskending')}}">Daily Task Ending</a></li>
+            <li><a class="dropdown-item" href="{{ route('employeetaskreport')}}">Employee Task</a></li>
 
         </ul>
   </div>

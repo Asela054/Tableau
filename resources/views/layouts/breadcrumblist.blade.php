@@ -334,6 +334,12 @@
       <li class="breadcrumb-item"><a href="#" class="breadcrumb-link breadcumpfont">Daily Tasks</a></li>
       <li class="breadcrumb-item"><a href="{{route('taskending')}}" class="breadcrumb-link breadcumpfont">Tasks Ending</a></li>
     </ol>
+    @elseif(request()->route()->getName() == 'employeetaskreport')
+    <ol class="breadcrumb custom-breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ route('employeemanagementdashboard')}}" class="breadcrumb-link breadcumpfont">Employee Management</a></li>
+      <li class="breadcrumb-item"><a href="#" class="breadcrumb-link breadcumpfont">Daily Tasks</a></li>
+      <li class="breadcrumb-item"><a href="{{route('employeetaskreport')}}" class="breadcrumb-link breadcumpfont">Employee Tasks</a></li>
+    </ol>
 {{-- Attendance and leave breadcrump list --}}
 
 
