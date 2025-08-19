@@ -28,12 +28,9 @@
                                 <tr>
                                     <th>ID </th>
                                     <th>Location</th>
-                                    <th>Code</th>
                                     <th>Contact No</th>
                                     <th>EPF No</th>
                                     <th>ETF No</th>
-                                    <th>Latitude</th>
-                                    <th>Longitude</th>
                                     <th class="text-right">Action</th>
                                 </tr>
                             </thead>
@@ -43,12 +40,9 @@
                                 <tr>
                                     <td>{{$branches->id}}</td>
                                     <td>{{$branches->location}}</td>
-                                    <td>{{$branches->code}}</td>
                                     <td>{{$branches->contactno}}</td>
                                     <td>{{$branches->epf}}</td>
                                     <td>{{$branches->etf}}</td>
-                                    <td>{{$branches->latitude}}</td>
-                                    <td>{{$branches->longitude}}</td>
                                     <td class="text-right">
                                         @can('location-edit')
                                             <button name="edit" id="{{$branches->id}}" class="edit btn btn-outline-primary btn-sm" type="submit"><i class="fas fa-pencil-alt"></i></button>
@@ -89,10 +83,6 @@
                                     <input type="text" name="location" id="location" class="form-control form-control-sm" />
                                 </div>
                                 <div class="form-group mb-1">
-                                    <label class="small font-weight-bold text-dark">Code</label>
-                                    <input type="text" name="code" id="code" class="form-control form-control-sm" />
-                                </div>
-                                <div class="form-group mb-1">
                                     <label class="small font-weight-bold text-dark">Contact No</label>
                                     <input type="text" name="contactno" id="contactno" class="form-control form-control-sm" />
                                 </div>
@@ -103,14 +93,6 @@
                                 <div class="form-group mb-1">
                                     <label class="small font-weight-bold text-dark">ETF No</label>
                                     <input type="text" name="etf" id="etf" class="form-control form-control-sm" />
-                                </div>
-                                 <div class="form-group mb-1">
-                                    <label class="small font-weight-bold text-dark">Latitude</label>
-                                    <input type="text" name="altitude"  id="altitude" class="form-control form-control-sm" />
-                                </div>
-                                <div class="form-group mb-1">
-                                    <label class="small font-weight-bold text-dark">Longitude</label>
-                                    <input type="text" name="longitude" id="longitude" class="form-control form-control-sm"/>
                                 </div>
                                 <div class="form-group mt-3">
                                     <button type="submit" name="action_button" id="action_button" class="btn btn-outline-primary btn-sm fa-pull-right px-4"><i class="fas fa-plus"></i>&nbsp;Add</button>
@@ -220,11 +202,8 @@ $(document).ready(function(){
             success: function (data) {
                 $('#location').val(data.result.location);
                 $('#contactno').val(data.result.contactno);
-                $('#code').val(data.result.code);
                 $('#epf').val(data.result.epf);
                 $('#etf').val(data.result.etf);
-                 $('#altitude').val(data.result.latitude);
-                $('#longitude').val(data.result.longitude);
                 $('#hidden_id').val(id);
                 $('.modal-title').text('Edit Location');
                 $('#action_button').html('Edit');

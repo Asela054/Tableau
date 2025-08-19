@@ -72,12 +72,9 @@ class BranchController extends Controller
 
         $branch=new Branch;
        $branch->location=$request->input('location');       
-       $branch->code=$request->input('code');       
-       $branch->contactno=$request->input('contactno');    
+       $branch->contactno=$request->input('contactno');       
        $branch->epf=$request->input('epf');
        $branch->etf=$request->input('etf');
-       $branch->latitude=$request->input('altitude');
-       $branch->longitude=$request->input('longitude');
        $branch->save();
        
         return response()->json(['success' => 'branch Added successfully.']);
@@ -144,10 +141,7 @@ class BranchController extends Controller
 
         $form_data = array(
             'location'    =>  $request->location,
-            'code'    =>  $request->code,
-            'contactno'        =>  $request->contactno,
-            'latitude'        =>  $request->altitude,
-            'longitude'        =>  $request->longitude
+            'contactno'        =>  $request->contactno
             
         );
 
