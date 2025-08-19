@@ -46,8 +46,7 @@
                             </tbody>
                         </table>
                         </div>
-                        <hr class="border-dark">
-                        <form>
+                        <!-- <form>
                             <div class="form-row">
                                 <div class="col">
                                     <label class="small font-weight-bold text-dark">Select File</label>
@@ -63,7 +62,7 @@
                                     <button type="submit" class="btn btn-outline-primary btn-sm fa-pull-right px-4"><i class="fas fa-save"></i>&nbsp;Save</button>
                                 @endcan
                             </div>
-                        </form>
+                        </form> -->
                     </div>
                     @include('layouts.employeeRightBar')
                 </div>
