@@ -35,7 +35,7 @@ class LeaveController extends Controller
             abort(403);
         }
 
-       $leavetype = LeaveType::whereBetween('id', [1, 6])->orderBy('id', 'asc')->get();
+       $leavetype = LeaveType::whereNotIn('id', [7])->orderBy('id', 'asc')->get();
        $employees = Employee::where('leave_approve_person', 1)->get();
 
         return view('Leave.leaveapply', compact('leavetype', 'employees'));

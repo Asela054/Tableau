@@ -1419,6 +1419,14 @@ Route::post('/taskendingcancel' ,'TaskEndingController@canceltask')->name('taske
 Route::get('employee_list_task', 'TaskEndingController@employee_list_task')->name('employee_list_task');
 Route::get('/employeetaskreport' ,'TaskEndingController@employeetask')->name('employeetaskreport');
 
+// Location Attendace New Routes
+Route::post('single_employeeattendance', 'JobattendanceController@single_employee')->name('single_employeeattendance'); 
+
+// Location Attendance Approve controller
+
+Route::get('jobattendanceapprove', 'JobAttendaceApproveController@index')->name('jobattendanceapprove');
+Route::post('jobattendanceapprovesave', 'JobAttendaceApproveController@approveattendace')->name('jobattendanceapprovesave');
+
 Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');
     Artisan::call('config:clear');
