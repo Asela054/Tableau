@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Attendance;
 use App\AttendanceEdited;
+use App\Helpers\EmployeeHelper;
 use App\Leave;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -231,6 +232,20 @@ class AttendanceController extends Controller
                 ->addColumn('last_time_stamp', function ($row) {
                     $lasttimestamp = date('H:i', strtotime($row->lasttimestamp));
                     return $lasttimestamp;
+                })
+                 ->addColumn('employee_display', function ($row) {
+                   return EmployeeHelper::getDisplayName($row);
+                   
+                })
+                ->filterColumn('employee_display', function($query, $keyword) {
+                    $query->where(function($q) use ($keyword) {
+                        $q->where('employees.emp_name_with_initial', 'like', "%{$keyword}%")
+                        ->orWhere('employees.calling_name', 'like', "%{$keyword}%")
+                        ->orWhere('employees.emp_id', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('formatted_date', function($query, $keyword) {
+                    $query->where('at1.date', 'like', "%{$keyword}%");
                 })
                 ->addColumn('action', function ($row) {
 
