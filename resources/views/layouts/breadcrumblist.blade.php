@@ -315,6 +315,13 @@
       <li class="breadcrumb-item"><a href="#" class="breadcrumb-link breadcumpfont">Daily Production</a></li>
       <li class="breadcrumb-item"><a href="{{route('employeeproductionreport')}}" class="breadcrumb-link breadcumpfont">Employee Production</a></li>
     </ol>
+    @elseif(request()->route()->getName() == 'MachineShow')
+    <ol class="breadcrumb custom-breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ route('employeemanagementdashboard')}}" class="breadcrumb-link breadcumpfont">Employee Management</a></li>
+      <li class="breadcrumb-item"><a href="#" class="breadcrumb-link breadcumpfont">Daily Production</a></li>
+      <li class="breadcrumb-item"><a href="{{route('products')}}" class="breadcrumb-link breadcumpfont">Products</a></li>
+      <li class="breadcrumb-item"><a href="{{ route('MachineShow', ['id' => $id]) }}" class="breadcrumb-link breadcumpfont">Machines : {{$products->productname}}</a></li>
+    </ol>
 
     @elseif(request()->route()->getName() == 'tasks')
     <ol class="breadcrumb custom-breadcrumb">

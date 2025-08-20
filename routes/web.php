@@ -1418,6 +1418,8 @@ Route::post('/taskendingfinish' ,'TaskEndingController@insert')->name('taskendin
 Route::post('/taskendingcancel' ,'TaskEndingController@canceltask')->name('taskendingcancel');
 Route::get('employee_list_task', 'TaskEndingController@employee_list_task')->name('employee_list_task');
 Route::get('/employeetaskreport' ,'TaskEndingController@employeetask')->name('employeetaskreport');
+// Task & Product report Controller Routes
+Route::get('/employeetaskproductreport' ,'EmployeeTaskProductController@employeetaskproduct')->name('employeetaskproductreport');
 
 // Location Attendace New Routes
 Route::post('single_employeeattendance', 'JobattendanceController@single_employee')->name('single_employeeattendance'); 
@@ -1426,6 +1428,14 @@ Route::post('single_employeeattendance', 'JobattendanceController@single_employe
 
 Route::get('jobattendanceapprove', 'JobAttendaceApproveController@index')->name('jobattendanceapprove');
 Route::post('jobattendanceapprovesave', 'JobAttendaceApproveController@approveattendace')->name('jobattendanceapprovesave');
+
+/*-- Product Machines Info----*/
+Route::resource('Machine', 'ProductMachineController');
+Route::get('MachineShow/{id}',['uses' => 'ProductMachineController@index', 'as' => 'MachineShow']);
+Route::post('addMachine',['uses' => 'ProductMachineController@store', 'as' => 'addMachine']);
+Route::post('Machine/update', 'ProductMachineController@update')->name('Machine.update');
+Route::get('Machine/destroy/{id}', 'ProductMachineController@destroy');
+Route::get('Machine_list_sel2', 'ProductMachineController@Machine_list_sel2');
 
 Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');
