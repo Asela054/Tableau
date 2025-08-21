@@ -140,7 +140,7 @@
             <li><a class="dropdown-item" href="{{ route('jobattendance')}}">Location Attendance</a></li>
             @endif
             @if(auth()->user()->can('Job-Attendance-Approve-list'))
-            <li><a class="dropdown-item" href="#">Location Attendance Approve</a></li>
+            <li><a class="dropdown-item" href="{{ route('jobattendanceapprove')}}">Location Attendance Approve</a></li>
             @endif
             @if(auth()->user()->can('Job-Meal-list'))
             <li><a class="dropdown-item" href="{{ route('jobmealallowance')}}">Meal Allowance</a></li>

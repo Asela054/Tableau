@@ -69,7 +69,8 @@ class ProductionEndingController extends Controller
          $current_date_time = Carbon::now()->toDateTimeString();
 
           $product_type = $request->input('product_type');
-          $quntity = $request->input('quntity');
+          $semiquntity = $request->input('semiquntity');
+          $fullquntity = $request->input('fullquntity');
           $desription = $request->input('desription');
           $hidden_id = $request->input('hidden_id');
 
@@ -82,28 +83,53 @@ class ProductionEndingController extends Controller
           $produtiondate = $maindata->date;
           $machine_id = $maindata->machine_id;
           $product_id = $maindata->product_id;
-          $semi_price = $maindata->semi_price;
-          $full_price = $maindata->full_price;
+
+          // get semi and full price from price metrix
+
+           $prodcumachine = DB::table('product_machines')
+                ->select('product_machines.*')
+                ->where('product_machines.product_id', $product_id)
+                ->where('product_machines.machine_id', $machine_id)
+                ->first(); 
+
+        $semi_price =  $prodcumachine->semi_price;
+        $full_price =  $prodcumachine->full_price;
+
 
           $product_unitvalue=0;
 
           if($product_type ==="Semi Completed"){
 
             $product_unitvalue = $semi_price;
-          }else{
+            $quntity =  $semiquntity;
+
+          }else if($product_type ==="Full Completed"){
+
             $product_unitvalue = $full_price;
+            $quntity =  $fullquntity;
+
+          }else{
+
+            $product_unitvalue = $full_price +  $semi_price;
+            $quntity =  $fullquntity + $semiquntity;
           }
 
+
+          // get employee count
            $employeeAllocations = DB::table('emp_product_allocation_details')
                             ->where('allocation_id', $hidden_id)
                             ->get();
 
+
           $employeeCount = $employeeAllocations->count();
 
-          $step01 = $product_unitvalue * $quntity;
+          
+
         if ($employeeCount > 0) {
-            
-            $employee_amount = $step01 / $employeeCount;
+
+                     $step01 = $product_unitvalue * $quntity;
+            $employee_amount = round($step01 / $employeeCount, 2);
+
             foreach ($employeeAllocations as $allocation) {
 
                 $existingRecord = EmployeeProduction::where('allocation_id', $hidden_id)
@@ -133,6 +159,9 @@ class ProductionEndingController extends Controller
             }
 
         $form_data = array(
+                    'product_type' => $product_type,
+                    'semi_amount' => $semiquntity,
+                    'full_amount' => $fullquntity,
                     'production_status' => '2',
                     'updated_by' => Auth::id(),
                     'updated_at' => $current_date_time,

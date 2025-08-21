@@ -11,7 +11,6 @@ class EmpProductAllocation extends Model
     protected $primarykey = 'id';
 
     protected $fillable =[
-
-        'date','status','created_by', 'updated_by'
+        'date','machine_id','product_id','shift_id','product_type','semi_amount','full_amount','cancel_description','production_status','status','created_by', 'updated_by'
     ];
 }
