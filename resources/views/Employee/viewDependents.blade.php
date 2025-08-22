@@ -84,7 +84,7 @@
                         </table>
                         </div>
                         <hr class="border-dark">
-                        <form class="form-horizontal" method="POST" action="{{ route('dependetAttachment') }}" enctype="multipart/form-data">
+                        <!-- <form class="form-horizontal" method="POST" action="{{ route('dependetAttachment') }}" enctype="multipart/form-data">
                             {{ csrf_field() }}
                             <div class="form-row">
                                 <div class="col">
@@ -112,7 +112,7 @@
                                 @endcan
                             </div>
                             <input type="hidden" class="form-control" id="id" name="id" value="{{$id}}">
-                        </form>
+                        </form> -->
                     </div>
                     @include('layouts.employeeRightBar')
                 </div>
