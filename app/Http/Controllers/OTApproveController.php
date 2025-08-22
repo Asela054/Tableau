@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Datatables;
+use Carbon\Carbon;
+use DateInterval;
+use DateTime;
 
 class OTApproveController extends Controller
 {
@@ -109,22 +112,64 @@ class OTApproveController extends Controller
 
             $ot_hours = (new \App\Attendance)->get_ot_hours_by_date($emp_id, $att->lasttimestamp, $att->first_checkin, $date,  $on_duty_time, $off_duty_time, $att->emp_department);
             //$ot_hours = (new \App\Attendance)->get_ot_hours_by_date_morning_evening($emp_id, $att->lasttimestamp, $att->first_checkin, $date, $att->onduty_time, $att->offduty_time, $att->emp_department);
-            $is_approved = (new \App\OtApproved)->is_exists_in_ot_approved($emp_id, $date);
+            // $is_approved = (new \App\OtApproved)->is_exists_in_ot_approved($emp_id, $date);
+            // //if ot_breakdown is a key in the array
+            // if (array_key_exists('ot_breakdown', $ot_hours)) {
+
+            //     $ot_breakdown = array('ot_breakdown'=> $ot_hours['ot_breakdown'], 'is_approved' => $is_approved);
+
+            //     $normal_rate_otwork_hrs = $ot_hours['normal_rate_otwork_hrs'];
+            //     $double_rate_otwork_hrs = $ot_hours['double_rate_otwork_hrs'];
+
+            //     //push ot_breakdown to ot_data
+            //     if (!empty($ot_breakdown)) {
+            //         array_push($ot_data, $ot_breakdown);
+            //     }
+
+            // }
+            if(empty($ot_hours['ot_breakdown'])) {
+                continue; // Skip if no OT hours found
+            }
+
+            if(count($ot_hours['ot_breakdown']) == 2) {
+                $OTmorningfrom = Carbon::parse($ot_hours['ot_breakdown'][0]['from_24']);
+                $OTeveningfrom = Carbon::parse($ot_hours['ot_breakdown'][1]['from_24']);
+                $is_approved_morning = (new \App\OtApproved)->is_exists_in_ot_approved($emp_id, $date, $OTmorningfrom);
+                $is_approved_evening = (new \App\OtApproved)->is_exists_in_ot_approved($emp_id, $date, $OTeveningfrom);
+            } else {
+                $OTeveningfrom = Carbon::parse($ot_hours['ot_breakdown'][0]['from_24']);
+                $is_approved_evening = (new \App\OtApproved)->is_exists_in_ot_approved($emp_id, $date, $OTeveningfrom);
+            }
+            //$ot_hours = (new \App\Attendance)->get_ot_hours_by_date_morning_evening($emp_id, $att->lasttimestamp, $att->first_checkin, $date, $att->onduty_time, $att->offduty_time, $att->emp_department);
             //if ot_breakdown is a key in the array
             if (array_key_exists('ot_breakdown', $ot_hours)) {
-
-                $ot_breakdown = array('ot_breakdown'=> $ot_hours['ot_breakdown'], 'is_approved' => $is_approved);
-
+                if(count($ot_hours['ot_breakdown']) == 2) {
+                    $ot_breakdown_morning = array('ot_breakdown'=> $ot_hours['ot_breakdown'][0], 'is_approved' => $is_approved_morning);
+                    $ot_breakdown_evening = array('ot_breakdown'=> $ot_hours['ot_breakdown'][1], 'is_approved' => $is_approved_evening);
+                } else {
+                    $ot_breakdown_evening = array('ot_breakdown'=> $ot_hours['ot_breakdown'][0], 'is_approved' => $is_approved_evening);
+                }
+                
                 $normal_rate_otwork_hrs = $ot_hours['normal_rate_otwork_hrs'];
                 $double_rate_otwork_hrs = $ot_hours['double_rate_otwork_hrs'];
 
-                //push ot_breakdown to ot_data
-                if (!empty($ot_breakdown)) {
-                    array_push($ot_data, $ot_breakdown);
+                if(count($ot_hours['ot_breakdown']) == 2) {
+                    //push ot_breakdown to ot_data
+                    if (!empty($ot_breakdown_morning)) {
+                        array_push($ot_data, $ot_breakdown_morning);
+                    }
+                    if (!empty($ot_breakdown_evening)) {
+                        array_push($ot_data, $ot_breakdown_evening);
+                    }
                 }
-
+                else {
+                    //push ot_breakdown to ot_data
+                    if (!empty($ot_breakdown_evening)) {
+                        array_push($ot_data, $ot_breakdown_evening);
+                    }
+                }
+                // dd($ot_data);
             }
-
         }
         return response()->json(['ot_data' => $ot_data]);
     }
