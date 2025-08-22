@@ -91,6 +91,15 @@
 
             $hasKPIPermissions = $user->can('Functional-list') ||
                             $user->can('Behavioral-list');
+
+            $hasproductionPermissions = $user->can('machine-list') || 
+                        $user->can('product-list')|| 
+                        $user->can('product-allocation-list')|| 
+                        $user->can('production-ending-list')|| 
+                        $user->can('task-list')|| 
+                        $user->can('task-allocation-list')|| 
+                        $user->can('task-ending-list')||
+                        $user->can('Production-Task-Approve-list');
         @endphp
 
         @if($hasOrganizationPermissions)
@@ -162,6 +171,19 @@
           <span class="tooltip">KPI Management</span>
         </li>
         @endif
+
+         @if($hasproductionPermissions)
+        <li>
+          <a href="{{ url('/productiontaskdashboard') }}" id="production_menu_link">
+            <i id="production_menu_link_icon" class="flaticon-381-background-1"></i>
+            <span class="links_name">Production & Task</span>
+          </a>
+          <span class="tooltip">Production & Task</span>
+        </li>
+        @endif
+
+
+
 
         @if($hasUserAccountSummaryPermission)
         <li>

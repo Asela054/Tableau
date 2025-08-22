@@ -1270,6 +1270,11 @@ Route::get('/productallocationstatus/{id}/{stasus}','ProductionEmployeeAllocatio
 
 // Production ending Controller Routes
 Route::get('productionending', 'ProductionEndingController@index')->name('productionending');
+Route::get('/productionendinglist' ,'ProductionEndingController@productionlist')->name('productionendinglist');
+Route::post('/productionendingfinish' ,'ProductionEndingController@insert')->name('productionendingfinish');
+Route::post('/productionendingcancel' ,'ProductionEndingController@cancelproduction')->name('productionendingcancel');
+Route::get('employee_list_production', 'ProductionEndingController@employee_list_production')->name('employee_list_production');
+Route::get('/employeeproductionreport' ,'ProductionEndingController@employeeproduction')->name('employeeproductionreport');
 
 // Employee Assigned Devices Routes
 Route::get('/viewAssignedDevices/{id}',['uses' => 'EmployeeDevicesController@show', 'as' => 'viewAssignedDevices']);
@@ -1378,8 +1383,7 @@ Route::get('no_pay_report', 'RptNopayController@no_pay_report')->name('no_pay_re
 Route::get('no_pay_report_list_month',['uses' => 'RptNopayController@no_pay_report_list_month', 'as' => 'no_pay_report_list_month']);
 Route::post('no_pay_days_data',['uses' => 'RptNopayController@no_pay_days_data', 'as' => 'no_pay_days_data']);
 
-Route::get('employee_list_production', 'ProductionEndingController@employee_list_production')->name('employee_list_production');
-Route::get('/employeeproductionreport' ,'ProductionEndingController@employeeproduction')->name('employeeproductionreport');
+
 
 // NDA Letter Routes
 Route::get('NDAletter', 'NDAletterController@index')->name('NDAletter');
@@ -1444,6 +1448,16 @@ Route::post('addMachine',['uses' => 'ProductMachineController@store', 'as' => 'a
 Route::post('Machine/update', 'ProductMachineController@update')->name('Machine.update');
 Route::get('Machine/destroy/{id}', 'ProductMachineController@destroy');
 Route::get('Machine_list_sel2', 'ProductMachineController@Machine_list_sel2');
+
+// Task & Product report Controller Routes
+Route::get('/employeetaskproductreport' ,'EmployeeTaskProductController@employeetaskproduct')->name('employeetaskproductreport');
+
+Route::get('/productiontaskdashboard' ,'ProductionTaskdashboardController@index')->name('productiontaskdashboard');
+
+//Production an Task Approve controller
+Route::get('/productiontaskapprove' ,'ProductionTaskApproveController@index')->name('productiontaskapprove');
+Route::post('/productiontaskapprovegenerate' ,'ProductionTaskApproveController@generateproductiontask')->name('productiontaskapprovegenerate');
+Route::post('/approveproductiontask' ,'ProductionTaskApproveController@approveproductiontask')->name('approveproductiontask');
 
 Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');

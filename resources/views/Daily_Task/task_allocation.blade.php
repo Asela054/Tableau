@@ -5,7 +5,7 @@
 <main> 
     <div class="page-header shadow">
         <div class="container-fluid">
-            @include('layouts.employee_nav_bar')
+            @include('layouts.production&task_nav_bar')
         </div>
     </div>
     <div class="container-fluid mt-4">
@@ -231,8 +231,8 @@
 @section('script')
 <script>
 $(document).ready(function(){
-    $('#employee_menu_link').addClass('active');
-    $('#employee_menu_link_icon').addClass('active');
+    $('#production_menu_link').addClass('active');
+    $('#production_menu_link_icon').addClass('active');
     $('#dailytask').addClass('navbtnactive');
 
     // Modal close handlers
