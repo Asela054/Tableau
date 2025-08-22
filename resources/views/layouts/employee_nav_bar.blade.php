@@ -119,6 +119,7 @@
   <div class="dropdown">
     <a role="button" data-toggle="dropdown" class="btn navbtncolor" href="javascript:void(0);" id="dailytask">
       Daily Task Process <span class="caret"></span></a>
+
       <ul class="dropdown-menu multi-level dropdownmenucolor" role="menu" aria-labelledby="dropdownMenu">
         <li><a class="dropdown-item" href="{{ route('tasks')}}">Tasks</a></li>
         <li><a class="dropdown-item" href="{{ route('taskallocation')}}">Employee Task Allocation</a></li>

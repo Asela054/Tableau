@@ -1,5 +1,5 @@
-<div class="row nowrap" style="padding-top: 5px;padding-bottom: 5px;">
 
+<div class="row nowrap" style="padding-top: 5px;padding-bottom: 5px;">
   @php
     $hasAttendanceAccess = auth()->user()->can('attendance-sync') ||
                          auth()->user()->can('attendance-incomplete-data-list') ||
@@ -20,8 +20,6 @@
                          auth()->user()->can('MealAllowanceApprove-list') ||
                          auth()->user()->can('Holiday-DeductionApprove-list');
   @endphp
-
-  @if($hasAttendanceAccess)
   <div class="dropdown">
     <a role="button" data-toggle="dropdown" class="btn navbtncolor" href="javascript:void(0);" id="attendantmaster">
       Attendance Information<span class="caret"></span></a>

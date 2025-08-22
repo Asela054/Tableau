@@ -2,10 +2,10 @@
 
 @section('content')
 
-<main> 
+<main>
     <div class="page-header shadow">
         <div class="container-fluid">
-            @include('layouts.employee_nav_bar')
+            @include('layouts.corporate_nav_bar')
            
         </div>
     </div>
@@ -14,9 +14,9 @@
             <div class="card-body p-0 p-2">
                 <div class="row">
                     <div class="col-12">
-                        
-                            <button type="button" class="btn btn-outline-primary btn-sm fa-pull-right" name="create_record" id="create_record"><i class="fas fa-plus mr-2"></i>Add Product</button>
-                      
+                        @can('location-create')
+                        <button type="button" class="btn btn-outline-primary btn-sm fa-pull-right" name="create_record" id="create_record"><i class="fas fa-plus mr-2"></i>Add Location</button>
+                        @endcan
                     </div>
                     <div class="col-12">
                         <hr class="border-dark">
@@ -27,21 +27,29 @@
                             <thead>
                                 <tr>
                                     <th>ID </th>
-                                    <th>Product</th>
-                                    <th>Description</th>
+                                    <th>Location</th>
+                                    <th>Contact No</th>
+                                    <th>EPF No</th>
+                                    <th>ETF No</th>
                                     <th class="text-right">Action</th>
                                 </tr>
                             </thead>
+
                             <tbody>
-                                @foreach($product as $products)
+                                @foreach($branch as $branches)
                                 <tr>
-                                    <td>{{$products->id}}</td>
-                                    <td>{{$products->productname}}</td>
-                                    <td>{{$products->description}}</td>
+                                    <td>{{$branches->id}}</td>
+                                    <td>{{$branches->location}}</td>
+                                    <td>{{$branches->contactno}}</td>
+                                    <td>{{$branches->epf}}</td>
+                                    <td>{{$branches->etf}}</td>
                                     <td class="text-right">
-                                            <a href="{{ route('MachineShow',$products->id) }}" title="Machines" class="machines btn btn-outline-info btn-sm" > <i class="fas fa-cogs"></i> </a>
-                                            <button name="edit" id="{{$products->id}}" class="edit btn btn-outline-primary btn-sm" type="submit"><i class="fas fa-pencil-alt"></i></button>
-                                            <button type="submit" name="delete" id="{{$products->id}}" class="delete btn btn-outline-danger btn-sm"><i class="far fa-trash-alt"></i></button>
+                                        @can('location-edit')
+                                            <button name="edit" id="{{$branches->id}}" class="edit btn btn-outline-primary btn-sm" type="submit"><i class="fas fa-pencil-alt"></i></button>
+                                        @endcan
+                                        @can('location-delete')
+                                            <button type="submit" name="delete" id="{{$branches->id}}" class="delete btn btn-outline-danger btn-sm"><i class="far fa-trash-alt"></i></button>
+                                        @endcan
                                     </td>
                                 </tr>
                                 @endforeach
@@ -49,18 +57,17 @@
                         </table>
                         </div>
                     </div>
-                </div>
+                </div>    
             </div>
         </div>
     </div>
-
     <!-- Modal Area Start -->
     <div class="modal fade" id="formModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header p-2">
-                    <h5 class="modal-title" id="staticBackdropLabel">Add Product</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">Add Location</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -72,21 +79,21 @@
                             <form method="post" id="formTitle" class="form-horizontal">
                                 {{ csrf_field() }}	
                                 <div class="form-group mb-1">
-                                    <label class="small font-weight-bold text-dark">Product Name</label>
-                                    <input type="text" name="productname" id="productname" class="form-control form-control-sm"  required/>
+                                    <label class="small font-weight-bold text-dark">Location</label>
+                                    <input type="text" name="location" id="location" class="form-control form-control-sm" />
                                 </div>
                                 <div class="form-group mb-1">
-                                    <label class="small font-weight-bold text-dark">Product Description</label>
-                                    <input type="text" name="description" id="description" class="form-control form-control-sm" />
-                                </div>
-                                <!-- <div class="form-group mb-1">
-                                    <label class="small font-weight-bold text-dark">Semi Finished Price</label>
-                                    <input type="number" step="any" name="semi_price" id="semi_price" class="form-control form-control-sm" />
+                                    <label class="small font-weight-bold text-dark">Contact No</label>
+                                    <input type="text" name="contactno" id="contactno" class="form-control form-control-sm" />
                                 </div>
                                 <div class="form-group mb-1">
-                                    <label class="small font-weight-bold text-dark">Full Finished Price</label>
-                                    <input type="number" step="any" name="full_price" id="full_price" class="form-control form-control-sm" />
-                                </div> -->
+                                    <label class="small font-weight-bold text-dark">EPF No</label>
+                                    <input type="text" name="epf" id="epf" class="form-control form-control-sm" />
+                                </div>
+                                <div class="form-group mb-1">
+                                    <label class="small font-weight-bold text-dark">ETF No</label>
+                                    <input type="text" name="etf" id="etf" class="form-control form-control-sm" />
+                                </div>
                                 <div class="form-group mt-3">
                                     <button type="submit" name="action_button" id="action_button" class="btn btn-outline-primary btn-sm fa-pull-right px-4"><i class="fas fa-plus"></i>&nbsp;Add</button>
                                 </div>
@@ -122,44 +129,43 @@
             </div>
         </div>
     </div>
-    <!-- Modal Area End -->     
+    <!-- Modal Area End -->
 </main>
               
 @endsection
+
 
 @section('script')
 
 <script>
 $(document).ready(function(){
 
-    $('#employee_menu_link').addClass('active');
-    $('#employee_menu_link_icon').addClass('active');
-    $('#dailyprocess').addClass('navbtnactive');
+    $('#organization_menu_link').addClass('active');
+    $('#organization_menu_link_icon').addClass('active');
+    $('#branchlink').addClass('navbtnactive');
 
     $('#dataTable').DataTable();
- 
-    $('#create_record').click(function () {
-        $('.modal-title').text('Add Product');
-        $('#action_button').val('Add');
+
+    $('#create_record').click(function(){
+        $('.modal-title').text('Add New Location');
+        $('#action_button').html('Add');
         $('#action').val('Add');
         $('#form_result').html('');
+        $('#formTitle')[0].reset();
+
         $('#formModal').modal('show');
     });
-
-
-    $('#formTitle').on('submit', function (event) {
+ 
+    $('#formTitle').on('submit', function(event){
         event.preventDefault();
         var action_url = '';
 
-
         if ($('#action').val() == 'Add') {
-            action_url = "{{ route('addProduct') }}";
+            action_url = "{{ route('addBranch') }}";
         }
-
         if ($('#action').val() == 'Edit') {
-            action_url = "{{ route('Product.update') }}";
+            action_url = "{{ route('Branch.update') }}";
         }
-
 
         $.ajax({
             url: action_url,
@@ -172,14 +178,14 @@ $(document).ready(function(){
                 if (data.errors) {
                     html = '<div class="alert alert-danger">';
                     for (var count = 0; count < data.errors.length; count++) {
-                        html += '<p>' + data.errors[count] + '</p>';
+                        html += '<p style="margin-bottom: 0 !important;">' + data.errors[count] + '</p>';
                     }
                     html += '</div>';
                 }
                 if (data.success) {
                     html = '<div class="alert alert-success">' + data.success + '</div>';
-                    // $('#formTitle')[0].reset();
-                    // $('#titletable').DataTable().ajax.reload();
+                    $('#formTitle')[0].reset();
+                    //$('#titletable').DataTable().ajax.reload();
                     location.reload()
                 }
                 $('#form_result').html(html);
@@ -187,26 +193,25 @@ $(document).ready(function(){
         });
     });
 
-     $(document).on('click', '.edit', function () {
+    $(document).on('click', '.edit', function () {
         var id = $(this).attr('id');
         $('#form_result').html('');
         $.ajax({
-            url: "Product/" + id + "/edit",
+            url: "Branch/" + id + "/edit",
             dataType: "json",
-                success: function (data) {
-                    $('#productname').val(data.result.productname);
-                    $('#description').val(data.result.description);
-                    $('#semi_price').val(data.result.semi_price);
-                    $('#full_price').val(data.result.full_price);
-
-                    $('#hidden_id').val(id);
-                    $('.modal-title').text('Edit Product');
-                    $('#action_button').html('Edit');
-                    $('#action').val('Edit');
-                    $('#formModal').modal('show');
-                }
-            })
-        });
+            success: function (data) {
+                $('#location').val(data.result.location);
+                $('#contactno').val(data.result.contactno);
+                $('#epf').val(data.result.epf);
+                $('#etf').val(data.result.etf);
+                $('#hidden_id').val(id);
+                $('.modal-title').text('Edit Location');
+                $('#action_button').html('Edit');
+                $('#action').val('Edit');
+                $('#formModal').modal('show');
+            }
+        })
+    });
 
     var user_id;
 
@@ -217,7 +222,7 @@ $(document).ready(function(){
 
     $('#ok_button').click(function () {
         $.ajax({
-            url: "Product/destroy/" + user_id,
+            url: "Branch/destroy/" + user_id,
             beforeSend: function () {
                 $('#ok_button').text('Deleting...');
             },
@@ -231,7 +236,6 @@ $(document).ready(function(){
             }
         })
     });
-
 });
 </script>
 
