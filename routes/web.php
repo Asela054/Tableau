@@ -1411,6 +1411,14 @@ Route::post('/taskallocationdelete' ,'TaskEmployeeAllocationController@delete')-
 Route::post('/taskallocationdeletelist' ,'TaskEmployeeAllocationController@deletelist')->name('taskallocationdeletelist');
 Route::get('/taskallocationstatus/{id}/{stasus}','TaskEmployeeAllocationController@status')->name('taskallocationstatus');
 
+// Location Attendace New Routes
+Route::post('single_employeeattendance', 'JobattendanceController@single_employee')->name('single_employeeattendance'); 
+
+// Location Attendance Approve controller
+
+Route::get('jobattendanceapprove', 'JobAttendaceApproveController@index')->name('jobattendanceapprove');
+Route::post('jobattendanceapprovesave', 'JobAttendaceApproveController@approveattendace')->name('jobattendanceapprovesave');
+
 // Task ending Controller Routes
 Route::get('taskending', 'TaskEndingController@index')->name('taskending');
 Route::get('/taskendinglist' ,'TaskEndingController@tasklist')->name('taskendinglist');
