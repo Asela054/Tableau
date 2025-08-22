@@ -1268,9 +1268,6 @@ Route::post('/productallocationdelete' ,'ProductionEmployeeAllocationController@
 Route::post('/productallocationdeletelist' ,'ProductionEmployeeAllocationController@deletelist')->name('productallocationdeletelist');
 Route::get('/productallocationstatus/{id}/{stasus}','ProductionEmployeeAllocationController@status')->name('productallocationstatus');
 
-// Production ending Controller Routes
-Route::get('productionending', 'ProductionEndingController@index')->name('productionending');
-
 // Employee Assigned Devices Routes
 Route::get('/viewAssignedDevices/{id}',['uses' => 'EmployeeDevicesController@show', 'as' => 'viewAssignedDevices']);
 Route::post('assignedDeviceInsert',['uses' => 'EmployeeDevicesController@create', 'as' => 'assignedDeviceInsert']);
@@ -1378,6 +1375,11 @@ Route::get('no_pay_report', 'RptNopayController@no_pay_report')->name('no_pay_re
 Route::get('no_pay_report_list_month',['uses' => 'RptNopayController@no_pay_report_list_month', 'as' => 'no_pay_report_list_month']);
 Route::post('no_pay_days_data',['uses' => 'RptNopayController@no_pay_days_data', 'as' => 'no_pay_days_data']);
 
+// Production ending Controller Routes
+Route::get('productionending', 'ProductionEndingController@index')->name('productionending');
+Route::get('/productionendinglist' ,'ProductionEndingController@productionlist')->name('productionendinglist');
+Route::post('/productionendingfinish' ,'ProductionEndingController@insert')->name('productionendingfinish');
+Route::post('/productionendingcancel' ,'ProductionEndingController@cancelproduction')->name('productionendingcancel');
 Route::get('employee_list_production', 'ProductionEndingController@employee_list_production')->name('employee_list_production');
 Route::get('/employeeproductionreport' ,'ProductionEndingController@employeeproduction')->name('employeeproductionreport');
 

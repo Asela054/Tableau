@@ -20,6 +20,7 @@
                          auth()->user()->can('MealAllowanceApprove-list') ||
                          auth()->user()->can('Holiday-DeductionApprove-list');
   @endphp
+  @if($hasAttendanceAccess)
   <div class="dropdown">
     <a role="button" data-toggle="dropdown" class="btn navbtncolor" href="javascript:void(0);" id="attendantmaster">
       Attendance Information<span class="caret"></span></a>

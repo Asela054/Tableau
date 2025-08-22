@@ -92,12 +92,6 @@
       </ul>
   </div>
   @endif
-
-  @php
-    $hasProductionAccess = auth()->user()->can('production-process-access'); // You should define appropriate permissions
-  @endphp
-
-  @if($hasProductionAccess)
   <div class="dropdown">
     <a role="button" data-toggle="dropdown" class="btn navbtncolor" href="javascript:void(0);" id="dailyprocess">
       Daily Production Process <span class="caret"></span></a>
@@ -109,13 +103,7 @@
         <li><a class="dropdown-item" href="{{ route('employeeproductionreport')}}">Employee Production</a></li>
       </ul>
   </div>
-  @endif
 
-  @php
-    $hasTaskAccess = auth()->user()->can('task-process-access'); // You should define appropriate permissions
-  @endphp
-
-  @if($hasTaskAccess)
   <div class="dropdown">
     <a role="button" data-toggle="dropdown" class="btn navbtncolor" href="javascript:void(0);" id="dailytask">
       Daily Task Process <span class="caret"></span></a>
@@ -126,11 +114,9 @@
         <li><a class="dropdown-item" href="{{ route('taskending')}}">Daily Task Ending</a></li>
       </ul>
   </div>
-  @endif
 
   @php
-    $hasPerformanceAccess = auth()->user()->can('pe-task-list') ||
-                          auth()->user()->can('employee-allowance-list');
+    $hasPerformanceAccess = auth()->user()->can('pe-task-list');
   @endphp
 
   @if($hasPerformanceAccess)
