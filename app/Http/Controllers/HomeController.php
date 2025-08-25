@@ -42,11 +42,20 @@ class HomeController extends Controller
         // today late attendance count
         // $late_times = DB::table('late_types')->where('id', 2)->first();
         $late_times = DB::table('late_types')->orderBy('time_from', 'desc')->first();
+        // $todaylatecount = DB::table('attendances')
+        //     ->select('date', 'emp_id')
+        //     ->where('date', $today)
+        //     ->where('timestamp','>', $today. ' ' . $late_times->time_from)
+        //     ->groupBy('date', 'emp_id')
+        //     ->get()
+        //     ->count();
         $todaylatecount = DB::table('attendances')
-            ->select('date', 'emp_id')
-            ->where('date', $today)
-            ->where('timestamp','>', $today. ' ' . $late_times->time_from)
-            ->groupBy('date', 'emp_id')
+            ->join('employees', 'attendances.emp_id', '=', 'employees.emp_id')
+            ->join('shift_types', 'employees.emp_shift', '=', 'shift_types.id')
+            ->select('attendances.date', 'attendances.emp_id')
+            ->where('attendances.date', $today)
+            ->whereRaw("attendances.timestamp > CONCAT(attendances.date, ' ', shift_types.onduty_time)")
+            ->groupBy('attendances.date', 'attendances.emp_id')
             ->get()
             ->count();
 

@@ -92,32 +92,6 @@
       </ul>
   </div>
   @endif
-  @php
-    $hasPerformanceAccess = auth()->user()->can('pe-task-list') ||
-                          auth()->user()->can('employee-allowance-list');
-  <div class="dropdown">
-    <a role="button" data-toggle="dropdown" class="btn navbtncolor" href="javascript:void(0);" id="dailyprocess">
-      Daily Production Process <span class="caret"></span></a>
-      <ul class="dropdown-menu multi-level dropdownmenucolor" role="menu" aria-labelledby="dropdownMenu">
-        <li><a class="dropdown-item" href="{{ route('machines')}}">Machines</a></li>
-        <li><a class="dropdown-item" href="{{ route('products')}}">Products</a></li>
-        <li><a class="dropdown-item" href="{{ route('productionallocation')}}">Employee Allocation</a></li>
-        <li><a class="dropdown-item" href="{{ route('productionending')}}">Daily Process Ending</a></li>
-        <li><a class="dropdown-item" href="{{ route('employeeproductionreport')}}">Employee Production</a></li>
-      </ul>
-  </div>
-
-  <div class="dropdown">
-    <a role="button" data-toggle="dropdown" class="btn navbtncolor" href="javascript:void(0);" id="dailytask">
-      Daily Task Process <span class="caret"></span></a>
-
-      <ul class="dropdown-menu multi-level dropdownmenucolor" role="menu" aria-labelledby="dropdownMenu">
-        <li><a class="dropdown-item" href="{{ route('tasks')}}">Tasks</a></li>
-        <li><a class="dropdown-item" href="{{ route('taskallocation')}}">Employee Task Allocation</a></li>
-        <li><a class="dropdown-item" href="{{ route('taskending')}}">Daily Task Ending</a></li>
-      </ul>
-  </div>
-  @endif
 
   @php
     $hasAllowanceAccess = auth()->user()->can('allowance-amount-list') ||
