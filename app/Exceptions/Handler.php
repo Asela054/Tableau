@@ -1,10 +1,15 @@
 <?php
-
 namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -14,11 +19,11 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        \Illuminate\Auth\AuthenticationException::class,
-        \Illuminate\Auth\Access\AuthorizationException::class,
-        \Symfony\Component\HttpKernel\Exception\HttpException::class,
-        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
-        \Illuminate\Session\TokenMismatchException::class,
+        AuthenticationException::class,
+        AuthorizationException::class,
+        HttpException::class,
+        ModelNotFoundException::class,
+        TokenMismatchException::class,
         \Illuminate\Validation\ValidationException::class,
     ];
 
@@ -42,29 +47,26 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return \Illuminate\Http\Response
      */
-    public function handle($request, Closure $next)
+    public function render($request, Exception $exception)
     {
-        if ($this->auth->guest()) {
-            if ($request->ajax()) {
-                return response('Unauthorized.', 401);
-            } else {
-                return redirect()->guest('/');
-            }
-        }
-        return $next($request);
-    }
-
-    protected function prepareException(Exception $e)
-    {
-        if ($e instanceof ModelNotFoundException) {
-            $e = new NotFoundHttpException($e->getMessage(), $e);
-        } elseif ($e instanceof AuthorizationException) {
-            $e = new AccessDeniedHttpException($e->getMessage(), $e);
-        } elseif ($e instanceof TokenMismatchException) {
-              return redirect('/');
+        // Handle null object errors (session expired) - This is your specific error
+        if ($exception instanceof \ErrorException && 
+            strpos($exception->getMessage(), 'Call to a member function') !== false &&
+            strpos($exception->getMessage(), 'on null') !== false) {
+            return redirect('/')->withErrors(['session' => 'Your session has expired. Please login again.']);
         }
 
-        return $e;
+        // Handle token mismatch (session expired)
+        if ($exception instanceof TokenMismatchException) {
+            return redirect('/')->withErrors(['session' => 'Your session has expired. Please login again.']);
+        }
+
+        // Handle authentication exceptions
+        if ($exception instanceof AuthenticationException) {
+            return $this->unauthenticated($request, $exception);
+        }
+
+        return parent::render($request, $exception);
     }
 
     /**
@@ -80,6 +82,28 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        return redirect('/');
+        return redirect('/')->withErrors([
+            'session' => 'Your session has expired. Please login again.'
+        ]);
+    }
+
+    /**
+     * Prepare exception for rendering.
+     *
+     * @param  \Exception  $e
+     * @return \Exception
+     */
+    protected function prepareException(Exception $e)
+    {
+        if ($e instanceof ModelNotFoundException) {
+            $e = new NotFoundHttpException($e->getMessage(), $e);
+        } elseif ($e instanceof AuthorizationException) {
+            $e = new AccessDeniedHttpException($e->getMessage(), $e);
+        } elseif ($e instanceof TokenMismatchException) {
+            // This will be handled in the render method
+            return $e;
+        }
+
+        return $e;
     }
 }
