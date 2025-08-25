@@ -268,8 +268,6 @@
 												@endforeach
 											</select>
 										</div>
-									</div>
-									<div class="form-row">
 										<div class="col">
 											<label class="small font-weight-bold text-dark">Job Status</label>
 											<select id="jobstatus" class="form-control form-control-sm" name="jobstatus">
@@ -282,6 +280,8 @@
 												@endforeach
 											</select>
 										</div>
+									</div>
+									<div class="form-row">
 										<div class="col">
 											<label class="small font-weight-bold text-dark">Date Assigned</label>
 											<input type="date" class="form-control form-control-sm" id="dateassign" name="dateassign" value="{{$employee->emp_assign_date}}">
@@ -299,6 +299,22 @@
 												<label class="form-check-label">
 													<input type="radio" class="form-check-input leave_approve_person" name="leave_approve_person" id="ot_allowed_1" value="1"
 														{{ $employee->leave_approve_person == 1 ? 'checked' : '' }}>Yes
+												</label>
+											</div>
+										</div>
+										<div class="col">
+											<label class="small font-weight-bold text-dark">Outstation Payment Eligible</label>
+											<br>
+											<div class="form-check-inline">
+												<label class="form-check-label">
+													<input type="radio" class="form-check-input outstation_payment" name="outstation_payment" id="outstation_payment_0" value="0" 
+														{{ $employee->outstation_payment == 0 ? 'checked' : '' }}>No
+												</label>
+											</div>
+											<div class="form-check-inline">
+												<label class="form-check-label">
+													<input type="radio" class="form-check-input outstation_payment" name="outstation_payment" id="outstation_payment_1" value="1"
+														{{ $employee->outstation_payment == 1 ? 'checked' : '' }}>Yes
 												</label>
 											</div>
 										</div>

@@ -88,29 +88,57 @@
                                     <label class="small font-weight-bold text-dark">Location</label>
                                     <input type="text" name="location" id="location" class="form-control form-control-sm" />
                                 </div>
-                                <div class="form-group mb-1">
-                                    <label class="small font-weight-bold text-dark">Code</label>
-                                    <input type="text" name="code" id="code" class="form-control form-control-sm" />
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group mb-1">
+                                            <label class="small font-weight-bold text-dark">Code</label>
+                                            <input type="text" name="code" id="code" class="form-control form-control-sm" />
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group mb-1">
+                                            <label class="small font-weight-bold text-dark">Contact No</label>
+                                            <input type="text" name="contactno" id="contactno" class="form-control form-control-sm" />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group mb-1">
-                                    <label class="small font-weight-bold text-dark">Contact No</label>
-                                    <input type="text" name="contactno" id="contactno" class="form-control form-control-sm" />
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group mb-1">
+                                            <label class="small font-weight-bold text-dark">EPF No</label>
+                                            <input type="text" name="epf" id="epf" class="form-control form-control-sm" />
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group mb-1">
+                                            <label class="small font-weight-bold text-dark">ETF No</label>
+                                            <input type="text" name="etf" id="etf" class="form-control form-control-sm" />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group mb-1">
-                                    <label class="small font-weight-bold text-dark">EPF No</label>
-                                    <input type="text" name="epf" id="epf" class="form-control form-control-sm" />
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group mb-1">
+                                            <label class="small font-weight-bold text-dark">Latitude</label>
+                                            <input type="text" name="altitude" id="altitude" class="form-control form-control-sm" />
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group mb-1">
+                                            <label class="small font-weight-bold text-dark">Longitude</label>
+                                            <input type="text" name="longitude" id="longitude" class="form-control form-control-sm"/>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group mb-1">
-                                    <label class="small font-weight-bold text-dark">ETF No</label>
-                                    <input type="text" name="etf" id="etf" class="form-control form-control-sm" />
-                                </div>
-                                 <div class="form-group mb-1">
-                                    <label class="small font-weight-bold text-dark">Latitude</label>
-                                    <input type="text" name="altitude"  id="altitude" class="form-control form-control-sm" />
-                                </div>
-                                <div class="form-group mb-1">
-                                    <label class="small font-weight-bold text-dark">Longitude</label>
-                                    <input type="text" name="longitude" id="longitude" class="form-control form-control-sm"/>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group mb-1">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="outside_location" name="outside_location" value="1">
+                                                <label class="custom-control-label" for="outside_location">Outside Location</label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="form-group mt-3">
                                     <button type="submit" name="action_button" id="action_button" class="btn btn-outline-primary btn-sm fa-pull-right px-4"><i class="fas fa-plus"></i>&nbsp;Add</button>
@@ -124,6 +152,7 @@
             </div>
         </div>
     </div>
+    
     <div class="modal fade" id="confirmModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -215,7 +244,7 @@ $(document).ready(function(){
         var id = $(this).attr('id');
         $('#form_result').html('');
         $.ajax({
-            url: "Branch/" + id + "/edit",
+            url: "{{ url('Branch') }}/" + id + "/edit",
             dataType: "json",
             success: function (data) {
                 $('#location').val(data.result.location);
@@ -225,6 +254,13 @@ $(document).ready(function(){
                 $('#etf').val(data.result.etf);
                  $('#altitude').val(data.result.latitude);
                 $('#longitude').val(data.result.longitude);
+
+                if(data.result.outside_location == 1){
+                    $('#outside_location').prop('checked', true);
+                }else{
+                    $('#outside_location').prop('checked', false);
+                }
+
                 $('#hidden_id').val(id);
                 $('.modal-title').text('Edit Location');
                 $('#action_button').html('Edit');
@@ -243,17 +279,16 @@ $(document).ready(function(){
 
     $('#ok_button').click(function () {
         $.ajax({
-            url: "Branch/destroy/" + user_id,
+            url: "{{ url('Branch/destroy') }}/" + user_id,  
+            method: "GET",
             beforeSend: function () {
                 $('#ok_button').text('Deleting...');
             },
             success: function (data) {
                 setTimeout(function () {
                     $('#confirmModal').modal('hide');
-                    $('#user_table').DataTable().ajax.reload();
-                    alert('Data Deleted');
-                }, 2000);
-                location.reload()
+                    location.reload();  
+                }, 1000);  
             }
         })
     });
