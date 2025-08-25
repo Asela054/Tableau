@@ -1447,6 +1447,16 @@ Route::post('Machine/update', 'ProductMachineController@update')->name('Machine.
 Route::get('Machine/destroy/{id}', 'ProductMachineController@destroy');
 Route::get('Machine_list_sel2', 'ProductMachineController@Machine_list_sel2');
 
+// Task & Product report Controller Routes
+Route::get('/employeetaskproductreport' ,'EmployeeTaskProductController@employeetaskproduct')->name('employeetaskproductreport');
+
+Route::get('/productiontaskdashboard' ,'ProductionTaskdashboardController@index')->name('productiontaskdashboard');
+
+//Production an Task Approve controller
+Route::get('/productiontaskapprove' ,'ProductionTaskApproveController@index')->name('productiontaskapprove');
+Route::post('/productiontaskapprovegenerate' ,'ProductionTaskApproveController@generateproductiontask')->name('productiontaskapprovegenerate');
+Route::post('/approveproductiontask' ,'ProductionTaskApproveController@approveproductiontask')->name('approveproductiontask');
+
 Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');
     Artisan::call('config:clear');
