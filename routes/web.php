@@ -1457,6 +1457,13 @@ Route::get('/productiontaskapprove' ,'ProductionTaskApproveController@index')->n
 Route::post('/productiontaskapprovegenerate' ,'ProductionTaskApproveController@generateproductiontask')->name('productiontaskapprovegenerate');
 Route::post('/approveproductiontask' ,'ProductionTaskApproveController@approveproductiontask')->name('approveproductiontask');
 
+Route::get('unauthorizejobattendanceapprove', 'JobAttendaceApproveController@unauthorizeattendace')->name('unauthorizejobattendanceapprove');
+
+//Job location allwance Controller Routes
+Route::get('/locationallwanceapprove' ,'JoblocationallwanceController@index')->name('locationallwanceapprove');
+Route::post('/locationallwanceapprovegenerate' ,'JoblocationallwanceController@generatelocationallowance')->name('locationallwanceapprovegenerate');
+Route::post('/approvelocationallowance' ,'JoblocationallwanceController@approvelocationallowance')->name('approvelocationallowance');
+
 Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');
     Artisan::call('config:clear');

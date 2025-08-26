@@ -63,7 +63,8 @@ if (!empty($_POST['from_date']) && !empty($_POST['to_date'])) {
     $to_date = $_POST['to_date'];
     $sql .= " AND `ja`.`attendance_date` BETWEEN '$from_date' AND '$to_date'";
 }
-$sql .= " AND `ja`.`location_status` = 1";
+
+$sql .= " AND `ja`.`location_status` = 2";
 
 $sql .= " AND `ja`.`status` = 1";
 
