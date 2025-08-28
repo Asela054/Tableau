@@ -149,6 +149,30 @@
         </div>
 
     </div>
+
+    <div class="container-fluid mt-4 row invoice-card-row">
+        <div class="col-xl-12 col-xxl-12">
+            <div class="card">
+                <div class="card-header d-flex flex-wrap border-0 pb-0">
+                    <div class="me-auto mb-sm-0 mb-3">
+                        <h4 class="card-title mb-2">Department Wise Attendance and OT Summary</h4>
+                    </div>
+                </div>
+                <div id="attendance-table-container">
+                    <!-- Table will be loaded here via AJAX -->
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading attendance data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
    @role('Admin','MSWay Admin')
     <div class="container-fluid mt-4 row invoice-card-row">
         <div class="col-xl-12 col-xxl-12">
@@ -513,6 +537,10 @@ $(document).ready( function () {
 });
 
 
+
+
+
+
     $('#todaybdbtn').click(function(){
         $.ajax({
             url: "{{ route('getdashboard_today_birthday') }}",
@@ -706,4 +734,167 @@ $(document).ready( function () {
 } );
 </script>
 
+
+
+<script>
+$(document).ready(function() {
+    // Function to load attendance data via AJAX
+    function loadAttendanceData() {
+        $.ajax({
+            url: "{{ route('getattendancesummarychart') }}", 
+            method: "GET",
+            dataType: "json",
+            beforeSend: function() {
+                $('#attendance-table-container').html(`
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading attendance data...</p>
+                    </div>
+                `);
+            },
+            success: function(response) {
+                if (response.success) {
+                    renderAttendanceTable(response.data, response.dates);
+                } else {
+                    $('#attendance-table-container').html(`
+                        <div class="text-center py-5 text-danger">
+                            <i class="fas fa-exclamation-circle fa-3x"></i>
+                            <p class="mt-2">Failed to load attendance data</p>
+                        </div>
+                    `);
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#attendance-table-container').html(`
+                    <div class="text-center py-5 text-danger">
+                        <i class="fas fa-exclamation-circle fa-3x"></i>
+                        <p class="mt-2">Error loading data: ${error}</p>
+                    </div>
+                `);
+            }
+        });
+    }
+
+    // Function to render the attendance table with Today/Yesterday column
+    function renderAttendanceTable(data, dates) {
+        if (!data || Object.keys(data).length === 0) {
+            $('#attendance-table-container').html(`
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-inbox fa-3x"></i>
+                    <p class="mt-2">No attendance data available</p>
+                </div>
+            `);
+            return;
+        }
+
+        // Get department names
+        const departments = Object.keys(data);
+        
+        // Create table header
+        let tableHtml = `
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th rowspan="2"></th>
+                            <th rowspan="2"></th>
+        `;
+        
+        // Add department headers
+        departments.forEach(dept => {
+            tableHtml += `<th class="text-center">${dept}</th>`;
+        });
+        
+        tableHtml += `</tr></thead><tbody>`;
+        
+        // Add rows for each metric
+        const metrics = [
+            { key: 'total_employees', label: 'Total Employees', hasDays: false },
+            { key: 'attendance', label: 'Attendance', hasDays: true },
+            { key: 'late_attendance', label: 'Late Attendance', hasDays: true },
+            { key: 'absent', label: 'Absent', hasDays: true },
+            { key: 'ot_persons', label: '# Of Persons Done OT', hasDays: false, yesterdayOnly: true },
+            { key: 'normal_ot_hours', label: 'NOTYH (Hours)', hasDays: false, yesterdayOnly: true },
+            { key: 'normal_ot_amount', label: 'NOTY (Normal OT)', hasDays: false, yesterdayOnly: true },
+            { key: 'double_ot_hours', label: 'DOTYH (hours)', hasDays: false, yesterdayOnly: true },
+            { key: 'double_ot_amount', label: 'DOTY (Double OT)', hasDays: false, yesterdayOnly: true },
+            { key: 'total_ot_hours', label: 'TOTH (Hours)', hasDays: false, yesterdayOnly: true },
+            { key: 'total_ot_amount', label: 'Total OTY', hasDays: false, yesterdayOnly: true }
+        ];
+        
+        metrics.forEach(metric => {
+            if (metric.hasDays) {
+                // For metrics with both today and yesterday values
+                tableHtml += `<tr><td rowspan="2">${metric.label}</td>`;
+                tableHtml += `<td>Today</td>`;
+                
+                departments.forEach(dept => {
+                    const todayValue = data[dept][`${metric.key}_today`] || 0;
+                    tableHtml += `<td class="text-center">${todayValue}</td>`;
+                });
+                
+                tableHtml += `</tr><tr><td>Yesterday</td>`;
+                
+                departments.forEach(dept => {
+                    const yesterdayValue = data[dept][`${metric.key}_yesterday`] || 0;
+                    tableHtml += `<td class="text-center">${yesterdayValue}</td>`;
+                });
+                
+                tableHtml += `</tr>`;
+            } else if (metric.yesterdayOnly) {
+                // For metrics with only yesterday values
+                tableHtml += `<tr><td>${metric.label}</td>`;
+                tableHtml += `<td>Yesterday</td>`;
+                
+                departments.forEach(dept => {
+                    const yesterdayValue = data[dept][`${metric.key}_yesterday`] || 0;
+                    
+                    // Format numbers with commas and two decimal places for amounts
+                    let displayValue = yesterdayValue;
+                    if (metric.key.includes('amount') || metric.key.includes('OTY') || metric.key.includes('OT')) {
+                        displayValue = parseFloat(yesterdayValue).toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                    }
+                    
+                    tableHtml += `<td class="text-center">${displayValue}</td>`;
+                });
+                
+                tableHtml += `</tr>`;
+            } else {
+                // For metrics with no day separation (like total employees)
+                tableHtml += `<tr><td>${metric.label}</td>`;
+                tableHtml += `<td></td>`;
+                
+                departments.forEach(dept => {
+                    const value = data[dept][metric.key] || 0;
+                    tableHtml += `<td class="text-center">${value}</td>`;
+                });
+                
+                tableHtml += `</tr>`;
+            }
+        });
+        
+        tableHtml += `</tbody></table></div></div>`;
+        
+        $('#attendance-table-container').html(tableHtml);
+    }
+
+    // Load data when page is ready
+    loadAttendanceData();
+    
+    // Refresh button functionality
+    $('#refresh-attendance-btn').on('click', function() {
+        $(this).prop('disabled', true).html('<i class="fas fa-sync-alt fa-spin"></i> Refreshing...');
+        loadAttendanceData();
+        setTimeout(() => {
+            $(this).prop('disabled', false).html('<i class="fas fa-sync-alt"></i> Refresh');
+        }, 1000);
+    });
+});
+</script>
 @endsection
