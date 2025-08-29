@@ -20,6 +20,11 @@ class JobAttendaceApproveController extends Controller
         return view('jobmanagement.locationattendace_approve',compact('locations'));
     }
 
+     public function unauthorizeattendace()
+    {
+        $locations=DB::table('branches')->select('*')->get();
+        return view('jobmanagement.unauthorizelocationattendace_approve',compact('locations'));
+    }
     public function approveattendace(Request $request){
 
         $permission = \Auth::user()->can('MealAllowanceApprove-approve');

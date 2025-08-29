@@ -124,7 +124,8 @@
                   auth()->user()->can('Job-Attendance-list') ||
                   auth()->user()->can('Job-Meal-list') ||
                   auth()->user()->can('Job-Meal-Approval') ||
-                  auth()->user()->can('Job-Attendance-Approve-list');
+                  auth()->user()->can('Job-Attendance-Approve-list')||
+                  auth()->user()->can('Location-Allowance-Approve-list');
   @endphp
 
   @if($hasJobAccess)
@@ -140,6 +141,9 @@
             @endif
             @if(auth()->user()->can('Job-Attendance-Approve-list'))
             <li><a class="dropdown-item" href="{{ route('jobattendanceapprove')}}">Location Attendance Approve</a></li>
+            @endif
+            @if(auth()->user()->can('Location-Allowance-Approve-list'))
+            <li><a class="dropdown-item" href="{{ route('locationallwanceapprove')}}">Location Attendance Approve</a></li>
             @endif
             @if(auth()->user()->can('Job-Meal-list'))
             <li><a class="dropdown-item" href="{{ route('jobmealallowance')}}">Meal Allowance</a></li>
