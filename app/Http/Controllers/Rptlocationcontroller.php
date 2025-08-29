@@ -16,8 +16,11 @@ class Rptlocationcontroller extends Controller
         if (!$permission) {
             abort(403);
         }
-        $locations = DB::table('job_location')->select('*')->whereIn('status',[1,2])->get();
-        $employees=DB::table('employees')->select('id','emp_name_with_initial')->where('deleted',0)->get();
+        $locations = DB::table('branches')->select('*')->get();
+        $employees=DB::table('employees')->select('id','emp_name_with_initial')
+        ->where('deleted',0)
+        ->where('is_resigned',0)
+        ->get();
         return view('departmetwise_reports.joballocationreport', compact('locations','employees'));
     }
 
@@ -27,15 +30,14 @@ class Rptlocationcontroller extends Controller
         $from_date = Request('from_date');
         $to_date = Request('to_date');
         $employee_f = Request('employee_f');
+        $attendacetype = Request('attendacetype');
 
         $results = DB::table('job_attendance')
-            ->join('job_location', 'job_attendance.location_id', '=', 'job_location.id')
-            ->join('employees', 'job_attendance.employee_id', '=', 'employees.id')
-            ->select(
-                'job_attendance.*',
-                'job_location.location_name',
-                'employees.emp_name_with_initial'
-            );
+            ->leftjoin('employees', 'job_attendance.employee_id', '=', 'employees.emp_id')
+            ->leftjoin('branches', 'job_attendance.location_id', '=', 'branches.id')
+            ->select('job_attendance.*','employees.emp_name_with_initial As emp_name','branches.location')
+            ->whereIn('job_attendance.status', [1, 2])
+            ->where('job_attendance.approve_status', 1);
 
         if (!empty($location)) {
             $results->where('job_attendance.location_id', $location);
@@ -47,6 +49,9 @@ class Rptlocationcontroller extends Controller
 
         if (!empty($employee_f)) {
             $results->where('job_attendance.employee_id', $employee_f);
+        }
+        if (!empty($attendacetype)) {
+            $results->where('job_attendance.location_status', $attendacetype);
         }
         $datalist = $results->get();
 

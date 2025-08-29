@@ -63,6 +63,11 @@
         <li class="breadcrumb-item"><a href="{{ route('corporatedashboard')}}" class="breadcrumb-link breadcumpfont">Organization</a></li>
         <li class="breadcrumb-item"><a href="{{route('LeaveDeduction')}}" class="breadcrumb-link breadcumpfont">Leave Deduction</a></li>
     </ol>
+    @elseif(request()->route()->getName() == 'LocationOt')
+    <ol class="breadcrumb custom-breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ route('corporatedashboard')}}" class="breadcrumb-link breadcumpfont">Organization</a></li>
+        <li class="breadcrumb-item"><a href="{{route('LocationOt')}}" class="breadcrumb-link breadcumpfont">Location OT</a></li>
+    </ol>
     @elseif(request()->route()->getName() == 'workCategoryList')
     <ol class="breadcrumb custom-breadcrumb">
       <li class="breadcrumb-item"><a href="{{ route('corporatedashboard')}}" class="breadcrumb-link breadcumpfont">Organization</a></li>
@@ -320,7 +325,7 @@
       <li class="breadcrumb-item"><a href="{{ route('employeemanagementdashboard')}}" class="breadcrumb-link breadcumpfont">Employee Management</a></li>
       <li class="breadcrumb-item"><a href="#" class="breadcrumb-link breadcumpfont">Daily Production</a></li>
       <li class="breadcrumb-item"><a href="{{route('products')}}" class="breadcrumb-link breadcumpfont">Products</a></li>
-      <li class="breadcrumb-item"><a href="{{ route('MachineShow', ['id' => $id]) }}" class="breadcrumb-link breadcumpfont">Machines : {{$products->productname}}</a></li>
+      <li class="breadcrumb-item"><a href="{{ route('MachineShow', ['id' => $id]) }}" class="breadcrumb-link breadcumpfont">Product : {{$products->productname}}</a></li>
     </ol>
 
     @elseif(request()->route()->getName() == 'tasks')
