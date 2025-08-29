@@ -491,12 +491,6 @@ Route::post('work_hours_save', 'WorkHoursController@work_hours_save')->name('wor
 Route::get('employee_resign_report', 'EmployeeResignController@employee_resign_report')->name('employee_resign_report');
 Route::get('get_resign_employees', 'EmployeeResignController@get_resign_employees')->name('get_resign_employees');
 
-// User account Details
-Route::get('useraccountsummery', 'UserAccountController@useraccountsummery_list')->name('useraccountsummery');
-Route::post('get_employee_monthlysummery', 'UserAccountController@get_employee_monthlysummery')->name('get_employee_monthlysummery');
-
-Route::get('userlogininformation', 'UserAccountController@userlogininformation_list')->name('userlogininformation');
-
 
 // Absent Report
 Route::get('employee_absent_report', 'EmployeeAbsentController@employee_absent_report')->name('employee_absent_report');
@@ -1210,7 +1204,6 @@ Route::get('useraccountsummery', 'UserAccountController@useraccountsummery_list'
 Route::post('get_employee_monthlysummery', 'UserAccountController@get_employee_monthlysummery')->name('get_employee_monthlysummery');
 Route::get('user_leave_list',['uses' => 'UserAccountController@leave_list_dt', 'as' => 'user_leave_list']);
 Route::get('userlogininformation', 'UserAccountController@userlogininformation_list')->name('userlogininformation');
-Route::post('get_employee_attendance', 'UserAccountController@get_attendance_by_employee_data')->name('get_employee_attendance');
 
 Route::post('/get_employee_salarysheet', 'UserAccountController@downloadSalarySheet')->name('get_employee_salarysheet');
 Route::post('/getEmployeeLeaveStatusSummary', 'UserAccountController@getemployeeleavestatus');

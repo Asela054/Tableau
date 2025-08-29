@@ -18,7 +18,8 @@
                          auth()->user()->can('attendance-device-clear') ||
                          auth()->user()->can('Lateminites-Approvel-list') ||
                          auth()->user()->can('MealAllowanceApprove-list') ||
-                         auth()->user()->can('Holiday-DeductionApprove-list');
+                         auth()->user()->can('Holiday-DeductionApprove-list') ||
+                         auth()->user()->can('Absent-Nopay-list');
   @endphp
   @if($hasAttendanceAccess)
   <div class="dropdown">
@@ -60,6 +61,9 @@
             @endif
             @if(auth()->user()->can('ot-list'))
             <li><a class="dropdown-item" href="{{ route('ot_approved')}}">Approved OT</a></li>
+            @endif
+            @if(auth()->user()->can('Absent-Nopay-list'))
+            <li><a class="dropdown-item" href="{{ route('absentnopay')}}">Absent Noapy Apply</a></li>
             @endif
             @if(auth()->user()->can('attendance-approve'))
             <li><a class="dropdown-item" href="{{ route('AttendanceApprovel')}}">Attendance Approval</a></li>
