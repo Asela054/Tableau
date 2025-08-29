@@ -226,7 +226,7 @@
                 },
                 columns: [
                     { data: 'id', name: 'id' },
-                    { data: 'emp_name', name: 'emp_name' },
+                    { data: 'employee_display', name: 'employee_display' },
                     { data: 'location', name: 'location' },
                     {
                     data: 'action',

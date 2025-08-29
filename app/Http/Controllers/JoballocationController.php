@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Joballocation;
+use App\Helpers\EmployeeHelper;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -55,11 +56,22 @@ class JoballocationController extends Controller
         $allocation = DB::table('job_allocation')
         ->leftjoin('employees', 'job_allocation.employee_id', '=', 'employees.emp_id')
         ->leftjoin('branches', 'job_allocation.location_id', '=', 'branches.id')
-        ->select('job_allocation.*','employees.emp_name_with_initial As emp_name','branches.location')
+        ->select('job_allocation.*','employees.emp_name_with_initial','employees.calling_name','branches.location')
         ->whereIn('job_allocation.status', [1, 2])
         ->get();
         return Datatables::of($allocation)
         ->addIndexColumn()
+        ->addColumn('employee_display', function ($row) {
+                   return EmployeeHelper::getDisplayName($row);
+                   
+        })
+        ->filterColumn('employee_display', function($query, $keyword) {
+            $query->where(function($q) use ($keyword) {
+                $q->where('employees.emp_name_with_initial', 'like', "%{$keyword}%")
+                ->orWhere('employees.calling_name', 'like', "%{$keyword}%")
+                ->orWhere('employees.emp_id', 'like', "%{$keyword}%");
+            });
+        })
         ->addColumn('action', function ($row) {
             $btn = '';
                     if(Auth::user()->can('Job-Allocation-edit')){

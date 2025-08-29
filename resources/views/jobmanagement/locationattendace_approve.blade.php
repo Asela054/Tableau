@@ -178,7 +178,7 @@ $(document).ready(function(){
                         orderable: false
                     },
                     { data: 'employee_id', name: 'employee_id' },
-                    { data: 'employee_name', name: 'employee_name' },
+                    { data: 'employee_display', name: 'employee_display' },
                     { data: 'location', name: 'location' },
                     { data: 'date', name: 'date' },
                     { data: 'on_time', name: 'on_time' },
@@ -225,7 +225,7 @@ $(document).ready(function(){
                 selectedRowIdsapprove.push({
                     id: rowData.id, // Using the ID from the first column
                     empid: rowData.employee_id, // From column 2
-                    emp_name: rowData.employee_name, // From column 3
+                    emp_name: rowData.employee_display, // From column 3
                     date: rowData.date, // From column 5
                     on_time: rowData.on_time, // From column 6
                     off_time: rowData.off_time, // From column 7

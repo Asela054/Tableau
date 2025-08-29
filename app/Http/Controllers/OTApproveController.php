@@ -45,6 +45,8 @@ class OTApproveController extends Controller
                 employees.id as emp_auto_id,
                 employees.emp_name_with_initial,
                 employees.emp_department,
+                employees.calling_name,
+                employees.emp_id,
                 shift_types.onduty_time,
                 shift_types.offduty_time,
                 shift_types.saturday_onduty_time,
@@ -88,6 +90,12 @@ class OTApproveController extends Controller
         $ot_data = array();
 
         foreach ($attendance_data as $att) {
+
+             $employeeObj = (object)[
+            'emp_id' => $att->emp_id,
+            'emp_name_with_initial' => $att->emp_name_with_initial,
+            'calling_name' => $att->calling_name
+        ];
 
             $emp_id = $att->uid;
             $date = $att->date;

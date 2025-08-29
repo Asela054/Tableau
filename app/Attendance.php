@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\EmployeeHelper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -430,9 +431,15 @@ class Attendance extends Model
 
         $emp = DB::table('employees')
             ->leftJoin('job_categories', 'job_categories.id' , '=', 'employees.job_category_id')
-            ->select('emp_shift', 'emp_etfno', 'emp_name_with_initial', 'job_category_id', 'job_categories.*')
+            ->select('emp_shift', 'emp_etfno', 'emp_name_with_initial','calling_name', 'emp_id', 'job_category_id', 'job_categories.*')
             ->where('emp_id', $emp_id)
             ->first();
+
+            $employeeObj = (object)[
+                'emp_id' => $emp->emp_id,
+                'emp_name_with_initial' => $emp->emp_name_with_initial,
+                'calling_name' => $emp->calling_name
+            ];
 
         $shift = DB::table('shift_types')
             ->where('id', $emp->emp_shift)
@@ -1345,7 +1352,7 @@ class Attendance extends Model
                 $ob = array(
                     'emp_id' => $emp_id,
                     'etf_no' => $emp->emp_etfno,
-                    'name' => $emp->emp_name_with_initial,
+                    'name' => EmployeeHelper::getDisplayName($employeeObj),
                     'date' => $record_date->format('Y-m-d'),
                     'day_name' => $date->format('l'),
                     'from' => $on_time->format('Y-m-d h:i A'),
@@ -1369,7 +1376,7 @@ class Attendance extends Model
                 $ob = array(
                     'emp_id' => $emp_id,
                     'etf_no' => $emp->emp_etfno,
-                    'name' => $emp->emp_name_with_initial,
+                    'name' => EmployeeHelper::getDisplayName($employeeObj),
                     'date' => $record_date->format('Y-m-d'),
                     'day_name' => $date->format('l'),
                     'from' => $fromtime->format('Y-m-d h:i A'),
@@ -2214,7 +2221,7 @@ class Attendance extends Model
                     $ob = array(
                         'emp_id' => $emp_id,
                         'etf_no' => $emp->emp_etfno,
-                        'name' => $emp->emp_name_with_initial,
+                        'name' => EmployeeHelper::getDisplayName($employeeObj),
                         'date' => $record_date->format('Y-m-d'),
                         'day_name' => $date->format('l'),
                         'from' => $on_time->format('Y-m-d h:i A'),
@@ -2238,7 +2245,7 @@ class Attendance extends Model
                     $ob = array(
                         'emp_id' => $emp_id,
                         'etf_no' => $emp->emp_etfno,
-                        'name' => $emp->emp_name_with_initial,
+                        'name' => EmployeeHelper::getDisplayName($employeeObj),
                         'date' => $record_date->format('Y-m-d'),
                         'day_name' => $date->format('l'),
                         'from' => $fromtime->format('Y-m-d h:i A'),

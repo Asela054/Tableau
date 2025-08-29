@@ -6,6 +6,7 @@ use App\Attendance;
 use App\AttendanceClear;
 use App\FingerprintUser;
 use App\FingerprintDevice;
+use App\Helpers\EmployeeHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -108,14 +109,19 @@ class AttendanceSyncController extends Controller
         $totalRecordswithFilter_arr = DB::select($query1 . $query2 . $query6 . $query4);
         $totalRecordswithFilter = $totalRecordswithFilter_arr[0]->acount;
 
-        $query3 = 'select `shift_types`.*, `at1`.*, at1.id as at_id, Max(at1.timestamp) as lasttimestamp, Min(at1.timestamp) as firsttimestamp,
-                `employees`.`emp_name_with_initial`, `branches`.`location` as b_location, departments.name as dep_name ';
+         $query3 = 'select `shift_types`.*, `at1`.*, at1.id as at_id, Max(at1.timestamp) as lasttimestamp, Min(at1.timestamp) as firsttimestamp,
+                `employees`.`emp_name_with_initial`,`employees`.`calling_name`, `branches`.`location` as b_location, departments.name as dep_name ';
 
         $records = DB::select($query3 . $query2 . $query6 . $query7 . $query5);
 
         $data_arr = array();
         foreach ($records as $record) {
 
+              $employeeObj = (object)[
+                'emp_id' => $record->emp_id,
+                'emp_name_with_initial' => $record->emp_name_with_initial,
+                'calling_name' => $record->calling_name
+            ];
             //get only the date from date
             $date = date('Y-m-d', strtotime($record->date));
 
@@ -126,6 +132,7 @@ class AttendanceSyncController extends Controller
                 "at_id" => $record->at_id,
                 "uid" => $record->uid,
                 "emp_name_with_initial" => $record->emp_name_with_initial,
+                "employee_display" => EmployeeHelper::getDisplayName($employeeObj),
                 "firsttimestamp" => $first_timestamp,
                 "begining_checkout" => $record->begining_checkout,
                 "date_row" => $record->date,

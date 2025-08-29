@@ -187,6 +187,7 @@ class AttendanceController extends Controller
                         ELSE Max(at1.timestamp)
                         END) AS lasttimestamp'),
                     'employees.emp_name_with_initial',
+                    'employees.calling_name',
                     'branches.location',
                     'departments.name as dep_name'
                 )
@@ -589,6 +590,7 @@ class AttendanceController extends Controller
                         ELSE Max(at1.timestamp)
                         END) AS lasttimestamp'),
                 'employees.emp_name_with_initial',
+                'employees.calling_name',
                 'shift_types.onduty_time',
                 'shift_types.offduty_time',
                 'branches.location as b_location',
@@ -653,6 +655,17 @@ class AttendanceController extends Controller
             })
             ->addColumn('last_24', function ($row) {
                 return $parsed_last_time = Carbon::parse($row->lasttimestamp)->format('Y-m-d H:i');
+            })
+             ->addColumn('employee_display', function ($row) {
+                   return EmployeeHelper::getDisplayName($row);
+                   
+            })
+            ->filterColumn('employee_display', function($query, $keyword) {
+                $query->where(function($q) use ($keyword) {
+                    $q->where('employees.emp_name_with_initial', 'like', "%{$keyword}%")
+                    ->orWhere('employees.calling_name', 'like', "%{$keyword}%")
+                    ->orWhere('employees.emp_id', 'like', "%{$keyword}%");
+                });
             })
             ->make(true);
 

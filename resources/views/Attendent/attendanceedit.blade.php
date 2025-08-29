@@ -684,8 +684,8 @@
                             "name": "uid",
                         },
                         {
-                            "data": "emp_name_with_initial",
-                            "name": "emp_name_with_initial",
+                            "data": "employee_display",
+                            "name": "employee_display",
                         },
                         {
                             "data": "date",
