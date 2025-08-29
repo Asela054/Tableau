@@ -39,7 +39,7 @@
                                     <input type="date" id="to_date" name="to_date" class="form-control" placeholder="yyyy-mm-dd">
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                          <div class="col-md-3">
                                 <button type="submit" class="btn btn-primary btn-sm filter-btn float-right" id="btn-filter" style="margin-top: 25px;"> Filter</button>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                                         <th>On Time</th>
                                         <th>Off Time</th>
                                         <th class="d-none">location id</th>
-                                        <th class="d-none" >Reason</th>
+                                        <th>Reason</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -149,13 +149,13 @@ $(document).ready(function(){
             }
        });
 
-        function load_dt(location, employee,from_date, to_date){
+        function load_dt(location, employee, from_date, to_date){
            $('#dataTable').DataTable({
                 lengthMenu: [[10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"]],
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: scripturl + '/attendance_approve_list.php',
+                    url: scripturl + '/unauthorizeattendance_approve_list.php',
                     type: 'POST',
                     data: {
                         location: location, 
@@ -191,7 +191,6 @@ $(document).ready(function(){
                     {
                         data: 'reason',
                         name: 'reason',
-                          visible: false
                     }
                 ],
                 "bDestroy": true,
@@ -201,7 +200,7 @@ $(document).ready(function(){
             });
         }
 
-        load_dt('', '', '', '', '');
+        load_dt('', '',  '', '');
 
         $('#formFilter').on('submit',function(e) {
             e.preventDefault();
