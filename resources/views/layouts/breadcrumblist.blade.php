@@ -531,6 +531,19 @@
   <li class="breadcrumb-item"><a href="#" class="breadcrumb-link breadcumpfont">Attendance</a></li>
   <li class="breadcrumb-item"><a href="{{route('lateminitesapprovel')}}" class="breadcrumb-link breadcumpfont">Late Deduction Approval</a></li>
 </ol>
+@elseif(request()->route()->getName() == 'lateminitesmanualmark')
+<ol class="breadcrumb custom-breadcrumb">
+  <li class="breadcrumb-item"><a href="{{ route('attendenceleavedashboard')}}" class="breadcrumb-link breadcumpfont">Attendance & Leave</a></li>
+   <li class="breadcrumb-item"><a href="#" class="breadcrumb-link breadcumpfont">Attendance</a></li>
+  <li class="breadcrumb-item"><a href="{{route('lateminitesmanualmark')}}" class="breadcrumb-link breadcumpfont">Late Attendance Auto Mark</a></li>
+</ol>
+
+@elseif(request()->route()->getName() == 'absentnopay')
+<ol class="breadcrumb custom-breadcrumb">
+  <li class="breadcrumb-item"><a href="{{ route('attendenceleavedashboard')}}" class="breadcrumb-link breadcumpfont">Attendance & Leave</a></li>
+   <li class="breadcrumb-item"><a href="#" class="breadcrumb-link breadcumpfont">Attendance</a></li>
+  <li class="breadcrumb-item"><a href="{{route('absentnopay')}}" class="breadcrumb-link breadcumpfont">Absent Noapy Apply</a></li>
+</ol>
 
 
 
