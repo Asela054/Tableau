@@ -1458,6 +1458,20 @@ Route::post('LocationOt/update', 'LocationOtController@update')->name('LocationO
 Route::get('LocationOt/destroy/{id}', 'LocationOtController@destroy');
 /*--  Location Ot ----*/
 
+Route::get('unauthorizejobattendanceapprove', 'JobAttendaceApproveController@unauthorizeattendace')->name('unauthorizejobattendanceapprove');
+
+//Job location allwance Controller Routes
+Route::get('/locationallwanceapprove' ,'JoblocationallwanceController@index')->name('locationallwanceapprove');
+Route::post('/locationallwanceapprovegenerate' ,'JoblocationallwanceController@generatelocationallowance')->name('locationallwanceapprovegenerate');
+Route::post('/approvelocationallowance' ,'JoblocationallwanceController@approvelocationallowance')->name('approvelocationallowance');
+
+Route::get('/getattendancesummarychart' ,'DashboarddetailedController@attendacechart')->name('getattendancesummarychart');
+
+// absent nopay controller 
+Route::get('/absentnopay' ,'DepartmentviseNopayController@index')->name('absentnopay');
+Route::post('/getabsetnopay' ,'DepartmentviseNopayController@getabsetnopay')->name('getabsetnopay');
+Route::post('/applyabsentnopay' ,'DepartmentviseNopayController@applyabsentnopay')->name('applyabsentnopay');
+
 Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');
     Artisan::call('config:clear');
