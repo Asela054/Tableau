@@ -13,9 +13,10 @@
             <div class="card">
                 <div class="card-body p-0 p-2">
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-12 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Product: {{$products->productname}}</h5>
                             @can('product-create')
-                                <button type="button" class="btn btn-outline-primary btn-sm fa-pull-right" name="create_record" id="create_record"><i class="fas fa-plus mr-2"></i>Add Machine</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm" name="create_record" id="create_record"><i class="fas fa-plus mr-2"></i>Add Machine</button>
                             @endcan
                         </div>
                         <div class="col-12">
