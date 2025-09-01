@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\EmployeeTermPayment;
+use App\Helpers\EmployeeHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
@@ -40,6 +41,7 @@ class JoblocationallwanceController extends Controller
 
           $query = DB::query()
             ->select('employees.id as emp_auto_id',
+                'employees.calling_name',
                 'employees.emp_id',
                 'employees.emp_name_with_initial'            
             )
@@ -54,6 +56,12 @@ class JoblocationallwanceController extends Controller
         $results = $query->get();
 
          foreach ($results as $record) {
+
+            $employeeObj = (object)[
+            'emp_id' => $record->emp_id,
+            'emp_name_with_initial' => $record->emp_name_with_initial,
+            'calling_name' => $record->calling_name
+        ];
 
                     // Get all attendance records for this employee in the date range
                 $attendanceRecords = DB::table('job_attendance')
@@ -95,7 +103,7 @@ class JoblocationallwanceController extends Controller
                     $data[] = [
                         'emp_auto_id' => $record->emp_auto_id,
                         'emp_id' => $record->emp_id,
-                        'emp_name_with_initial' => $record->emp_name_with_initial,
+                        'emp_name_with_initial' =>EmployeeHelper::getDisplayName($employeeObj),
                         'visit_count' => count($uniqueDaysWithOutsideLocation),
                         'allowance_amount' => $allowanceAmount,
                         'total_allowance' => $totalAllowance

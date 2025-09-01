@@ -239,7 +239,9 @@ Route::post('Attendance.delete', 'AttendanceController@delete')->name('Attendanc
 
 
 //incomplete_attendances
-Route::get('incomplete_attendances',['uses' => 'AttendanceController@incomplete_attendances', 'as' => 'incomplete_attendances']);
+Route::get('incomplete_attendances',['uses' => 'IncompleteAttendanceController@incomplete_attendances', 'as' => 'incomplete_attendances']);
+Route::post('get_incomplete_attendance_by_employee_data', 'IncompleteAttendanceController@get_incomplete_attendance_by_employee_data')->name('get_incomplete_attendance_by_employee_data');
+Route::post('mark_as_no_pay', 'IncompleteAttendanceController@mark_as_no_pay')->name('mark_as_no_pay');
 
 Route::get('AttendanceEdit',['uses' => 'AttendanceController@attendanceedit', 'as' => 'AttendanceEdit']);
 Route::get('attendance_list_for_edit',['uses' => 'AttendanceController@attendance_list_for_edit', 'as' => 'attendance_list_for_edit']);
@@ -269,7 +271,7 @@ Route::get('/getBranchAttendentChart', 'AttendanceController@getBranchAttendentC
 Route::get('/Attendentdetails/{id}/{date}',['uses' => 'AttendanceController@attendentdetails', 'as' => 'Attendentdetails']);
 
 //get_incomplete_attendance_by_employee_data
-Route::post('get_incomplete_attendance_by_employee_data', 'AttendanceController@get_incomplete_attendance_by_employee_data')->name('get_incomplete_attendance_by_employee_data');
+
 
 Route::post('Attendance/update', 'AttendanceController@update')->name('Attendance.update');
 Route::get('Attendance/destroy/{id}', 'AttendanceController@destroy');
@@ -1284,7 +1286,7 @@ Route::post('end_user_letterprintdata', 'EndUserletterPDFController@printdata')-
 Route::get('employee_list_letter', 'EmployeeletterController@employee_list_letter')->name('employee_list_letter');
 
 // new routes
-Route::post('mark_as_no_pay', 'IncompleteAttendanceController@mark_as_no_pay')->name('mark_as_no_pay');
+
 
 // Attendace Sync Controller Routes
 Route::get('/attendance_list_ajax', 'AttendanceSyncController@attendance_list_ajax')->name('attendance_list_ajax');

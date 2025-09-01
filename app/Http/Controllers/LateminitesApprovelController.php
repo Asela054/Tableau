@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\EmployeeTermPayment;
+use App\Helpers\EmployeeHelper;
 use Illuminate\Http\Request;
 use Auth;
 use App\Http\Controllers\Controller;
@@ -64,6 +65,7 @@ class LateminitesApprovelController extends Controller
                 'employees.id as emp_auto_id',
                 'employees.emp_id',
                 'employees.emp_name_with_initial',
+                'employees.calling_name',
                 'employees.emp_join_date',
                 'branches.location',
                 'departments.name as dept_name',
@@ -104,6 +106,13 @@ class LateminitesApprovelController extends Controller
             continue;
         }
 
+         $employeeObj = (object)[
+            'emp_id' => $record->emp_id,
+            'emp_name_with_initial' => $record->emp_name_with_initial,
+            'calling_name' => $record->calling_name
+        ];
+
+
             $late_day_amount = 0;
             $late_hours_total = 0;
             $nopayAmount = 0;
@@ -137,7 +146,7 @@ class LateminitesApprovelController extends Controller
             if($late_day_amount>0){
                 $data[] = [
                     'emp_id' => $record->emp_id,
-                    'emp_name_with_initial' => $record->emp_name_with_initial,
+                    'emp_name_with_initial' =>EmployeeHelper::getDisplayName($employeeObj),
                     'emp_autoid' => $record->emp_auto_id,
                     'late_hours_total' => number_format($late_hours_total, 2),
                     'nopayAmount' => number_format(abs($nopayAmount), 2),

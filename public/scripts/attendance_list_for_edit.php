@@ -1,5 +1,11 @@
 <?php
 
+// Include the EmployeeHelper class
+use App\Helpers\EmployeeHelper;
+
+// Correct path resolution for Laravel - use base path or proper autoloading
+require_once __DIR__ . '/../../app/Helpers/EmployeeHelper.php';
+
 $table = 'attendances';
 $primaryKey = 'id';
 
@@ -9,8 +15,21 @@ $columns = array(
     array('db' => '`sub`.`first_time_stamp`', 'dt' => 'first_time_stamp', 'field' => 'first_time_stamp'),
     array('db' => '`sub`.`last_time_stamp`', 'dt' => 'last_time_stamp', 'field' => 'last_time_stamp'),
     array('db' => '`employees`.`emp_name_with_initial`', 'dt' => 'emp_name_with_initial', 'field' => 'emp_name_with_initial'),
+    array('db' => '`employees`.`calling_name`', 'dt' => 'calling_name', 'field' => 'calling_name'),
+    array('db' => '`employees`.`emp_id`', 'dt' => 'emp_id', 'field' => 'emp_id'),
     array('db' => '`branches`.`location`', 'dt' => 'location', 'field' => 'location'),
-    array('db' => '`departments`.`name`', 'dt' => 'dep_name', 'field' => 'dep_name', 'as' => 'dep_name')
+    array('db' => '`departments`.`name`', 'dt' => 'dep_name', 'field' => 'dep_name', 'as' => 'dep_name'),
+    array('db' => '`employees`.`emp_id`', 'dt' => 'employee_display', 'field' => 'emp_id', 
+          'formatter' => function($d, $row) {
+              $employee = (object)[
+                  'emp_name_with_initial' => $row['emp_name_with_initial'],
+                  'calling_name' => $row['calling_name'],
+                  'emp_id' => $row['emp_id']
+              ];
+              
+              return EmployeeHelper::getDisplayName($employee);
+          }
+    )
 );
 
 require('config.php');

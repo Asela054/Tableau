@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Helpers\EmployeeHelper;
 use App\LateAttendance;
 use App\Leave;
 use Illuminate\Http\Request;
@@ -76,6 +76,7 @@ class LateAttendanceController extends Controller
                 DB::raw('MAX(at1.timestamp) as last_checkout'),
                 'employees.emp_id',
                 'employees.emp_name_with_initial',
+                'employees.calling_name',
                 'branches.location as branch_location',
                 'branches.id as branch_id',
                 'departments.name as department_name',
@@ -93,6 +94,7 @@ class LateAttendanceController extends Controller
             $baseQuery->where(function($q) use ($searchValue) {
                 $q->where('employees.emp_id', 'like', "%$searchValue%")
                 ->orWhere('employees.emp_name_with_initial', 'like', "%$searchValue%")
+                 ->orWhere('employees.calling_name', 'like', "%$searchValue%")
                 ->orWhere('at1.timestamp', 'like', "%$searchValue%")
                 ->orWhere('companies.name', 'like', "%$searchValue%")
                 ->orWhere('branches.location', 'like', "%$searchValue%")
@@ -130,6 +132,8 @@ class LateAttendanceController extends Controller
             ->mergeBindings($filteredQuery)
             ->count();
 
+
+
         $filteredQuery->orderBy($columnName, $columnSortOrder);
         $records = $filteredQuery->skip($start)->take($rowperpage)->get();
 
@@ -139,6 +143,12 @@ class LateAttendanceController extends Controller
             $first_checkin = Carbon::parse($record->first_checkin);
             $last_checkout = Carbon::parse($record->last_checkout);
             
+             $employeeObj = (object)[
+            'emp_id' => $record->emp_id,
+            'emp_name_with_initial' => $record->emp_name_with_initial,
+            'calling_name' => $record->calling_name
+        ];
+
              $is_late_marked = DB::table('employee_late_attendances')
             ->where('emp_id', $record->emp_id)
             ->where('date', $record->date)
@@ -148,6 +158,7 @@ class LateAttendanceController extends Controller
                 'id' => $record->id,
                 'uid' => $record->uid,
                 'emp_name_with_initial' => $record->emp_name_with_initial,
+                'employee_display' => EmployeeHelper::getDisplayName($employeeObj),
                 'date' => $record->date,
                 'timestamp' => $first_checkin->format('H:i'),
                 'lasttimestamp' => $first_checkin->format('H:i') != $last_checkout->format('H:i') 
@@ -392,6 +403,7 @@ class LateAttendanceController extends Controller
         $query3 = 'select ela.*,   
             employees.emp_id ,
             employees.emp_name_with_initial ,
+            `employees`.`calling_name`,
             branches.location as b_location,
             branches.id as b_location_id,
             departments.name as dept_name,  
@@ -406,9 +418,16 @@ class LateAttendanceController extends Controller
 
         foreach ($records as $record) {
 
+              $employeeObj = (object)[
+                'emp_id' => $record->emp_id,
+                'emp_name_with_initial' => $record->emp_name_with_initial,
+                'calling_name' => $record->calling_name
+            ];
+
             $data_arr[] = array(
                 "id" => $record->id,
                 "emp_name_with_initial" => $record->emp_name_with_initial,
+                "employee_display" => EmployeeHelper::getDisplayName($employeeObj),
                 "date" => $record->date,
                 "check_in_time" => date('H:i', strtotime($record->check_in_time)),
                 "check_out_time" => date('H:i', strtotime($record->check_out_time)),
@@ -649,6 +668,7 @@ class LateAttendanceController extends Controller
         $query = DB::query()
             ->select('ela.*',
                 'employees.emp_name_with_initial',
+                'employees.calling_name',
                 'branches.location',
                 'departments.name as dep_name')
             ->from('employee_late_attendances as ela')
@@ -683,6 +703,20 @@ class LateAttendanceController extends Controller
             ->editColumn('check_out_time', function ($row) {
                 return date('H:i', strtotime($row->check_out_time));
             })
+             ->addColumn('employee_display', function ($row) {
+                   return EmployeeHelper::getDisplayName($row);
+                   
+                })
+            ->filterColumn('employee_display', function($query, $keyword) {
+                    $query->where(function($q) use ($keyword) {
+                        $q->where('employees.emp_name_with_initial', 'like', "%{$keyword}%")
+                        ->orWhere('employees.calling_name', 'like', "%{$keyword}%")
+                        ->orWhere('employees.emp_id', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('formatted_date', function($query, $keyword) {
+                    $query->where('at1.date', 'like', "%{$keyword}%");
+                })
             ->addColumn('action', function ($row) {
 
                 $btn = '';
