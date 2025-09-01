@@ -63,7 +63,7 @@ class HolidayDeductionapproveController extends Controller
         ->get();
 
         foreach ($query as $row) {
-            // if($row->empid==250){
+            // if($row->empid==243){
                 $empId = $row->empid;
                 $empName = $row->emp_name;
                 $payrollProfileId = $row->payroll_profiles_id;
@@ -135,10 +135,10 @@ class HolidayDeductionapproveController extends Controller
                     // dd($totalAmount, $deductionamount);
                 }
                 
-                if($totalAmount==0 && $totalDays->total_days==0){
+                if($totalAmount==0 && $totalDays->total_days<=0.5){
                     $totalAmount = $monthlytotal;
                 }
-
+                
                 $datareturn[] = [
                     'deductionsstatus' => $approveholidayductionsstatus,
                     'empid' => $empId,
