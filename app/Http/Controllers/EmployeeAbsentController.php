@@ -8,6 +8,7 @@ use Auth;
 use Carbon\Carbon;
 use Datatables;
 use DB;
+use Session;
 
 class EmployeeAbsentController extends Controller
 {
@@ -17,8 +18,16 @@ class EmployeeAbsentController extends Controller
         if (!$permission) {
             abort(403);
         }
+
+        if (!Session::has('company_name')) {
+            $company_name = DB::table('companies')->value('name');
+            Session::put('company_name', $company_name);
+        } else {
+            $company_name = Session::get('company_name');
+        }
+
         $departments=DB::table('departments')->select('*')->get();
-        return view('Report.employee_absent_report',compact('departments'));
+        return view('Report.employee_absent_report',compact('departments','company_name'));
     }
 
     

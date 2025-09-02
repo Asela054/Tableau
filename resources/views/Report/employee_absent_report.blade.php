@@ -1,4 +1,4 @@
-<?php $page_stitle = 'Report on Employees Resignation - Multi Offset HRM'; ?>
+<?php $page_stitle = 'Report on Employees Resignation - '.$company_name.''; ?>
 @extends('layouts.app')
 
 @section('content')
@@ -114,11 +114,11 @@ $(document).ready(function() {
             buttons: [
                             {
                                 extend: 'excelHtml5',
-                                title: 'Report on Employees Absent ('+selectdatefrom+'-'+selectdateto+') '+departmentname+' - Multi Offset HRM   '
+                                title: 'Report on Employees Absent ('+selectdatefrom+'-'+selectdateto+') '+departmentname+' -<?php echo $company_name; ?>'
                             },
                             {
                             extend: 'pdf',
-                            title: 'Report on Employees Absent ('+selectdatefrom+'-'+selectdateto+') '+departmentname+' - Multi Offset HRM   ',
+                            title: 'Report on Employees Absent ('+selectdatefrom+'-'+selectdateto+') '+departmentname+' -<?php echo $company_name; ?>',
                             customize: function(doc) {
                                 doc.pageSize = 'LEGAL';
                                 doc.pageOrientation = 'landscape';
