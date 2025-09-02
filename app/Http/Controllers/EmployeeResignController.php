@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Auth;
 use Datatables;
 use DB;
+use Session;
 
 class EmployeeResignController extends Controller
 {
@@ -17,8 +18,15 @@ class EmployeeResignController extends Controller
             abort(403);
         }
 
+        if (!Session::has('company_name')) {
+            $company_name = DB::table('companies')->value('name');
+            Session::put('company_name', $company_name);
+        } else {
+            $company_name = Session::get('company_name');
+        }
+
         $departments=DB::table('departments')->select('*')->get();
-        return view('Report.employee_resign_report',compact('departments'));
+        return view('Report.employee_resign_report',compact('departments','company_name'));
     }
 
     

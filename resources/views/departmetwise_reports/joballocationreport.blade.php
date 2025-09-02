@@ -1,4 +1,4 @@
-<?php $page_stitle = 'Report on Employees Resignation - Multi Offset HRM'; ?>
+<?php $page_stitle = 'Report on Employees Resignation - '.$company_name.''; ?>
 @extends('layouts.app')
 
 @section('content')
