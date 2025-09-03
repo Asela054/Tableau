@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Employee;
 use App\EmployeePaySlip;
+use App\Helpers\EmployeeHelper;
 use App\Leave;
 use App\PayrollProfile;
 use Illuminate\Http\Request;
@@ -253,11 +254,23 @@ class RptNopayController extends Controller
 
                 return $view_no_pay_days_btn;
             })
+            ->addColumn('employee_display', function ($row) {
+                   return EmployeeHelper::getDisplayName($row);
+                   
+            })
+            ->filterColumn('employee_display', function($query, $keyword) {
+                $query->where(function($q) use ($keyword) {
+                    $q->where('employees.emp_name_with_initial', 'like', "%{$keyword}%")
+                    ->orWhere('employees.calling_name', 'like', "%{$keyword}%")
+                    ->orWhere('employees.emp_id', 'like', "%{$keyword}%");
+                });
+            })
 
             ->rawColumns(['action',
                 'work_days',
                 'month',
                 'leave_days',
+                'employee_display',
                 'no_pay_days_data',
                 'view_no_pay_days_btn'
             ])

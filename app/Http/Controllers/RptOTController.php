@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Helpers\EmployeeHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -280,11 +280,23 @@ class RptOTController extends Controller
 
                 return number_format($double_ot_hours, 2);
             })
+             ->addColumn('employee_display', function ($row) {
+                   return EmployeeHelper::getDisplayName($row);
+                   
+            })
+            ->filterColumn('employee_display', function($query, $keyword) {
+                $query->where(function($q) use ($keyword) {
+                    $q->where('employees.emp_name_with_initial', 'like', "%{$keyword}%")
+                    ->orWhere('employees.calling_name', 'like', "%{$keyword}%")
+                    ->orWhere('employees.emp_id', 'like', "%{$keyword}%");
+                });
+            })
 
             ->rawColumns(['action',
                 'work_days',
                 'leave_days',
                 'no_pay_days',
+                'employee_display',
                 'normal_rate_otwork_hrs',
                 'double_rate_otwork_hrs'
             ])

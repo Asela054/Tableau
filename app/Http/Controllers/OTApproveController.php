@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Helpers\EmployeeHelper;
 use App\OtApproved;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -240,6 +240,7 @@ class OTApproveController extends Controller
                 employees.emp_shift,  
                 employees.id as emp_auto_id,
                 employees.emp_name_with_initial,
+                employees.calling_name,
                 employees.emp_department, 
                 branches.location as b_location,
                 departments.name as dept_name 
@@ -294,6 +295,17 @@ class OTApproveController extends Controller
             //to
             ->addColumn('to', function ($row) {
                 return date('Y-m-d H:i', strtotime($row->to));
+            })
+             ->addColumn('employee_display', function ($row) {
+                   return EmployeeHelper::getDisplayName($row);
+                   
+            })
+            ->filterColumn('employee_display', function($query, $keyword) {
+                $query->where(function($q) use ($keyword) {
+                    $q->where('employees.emp_name_with_initial', 'like', "%{$keyword}%")
+                    ->orWhere('employees.calling_name', 'like', "%{$keyword}%")
+                    ->orWhere('employees.emp_id', 'like', "%{$keyword}%");
+                });
             })
             ->rawColumns(['action'])
             ->make(true);

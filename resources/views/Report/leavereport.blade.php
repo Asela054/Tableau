@@ -183,7 +183,10 @@
 
                     columns: [
                         { data: 'id' },
-                        { data: 'emp_name_with_initial' },
+                        { 
+                            data: 'employee_display',
+                            name: 'employee_display' 
+                        },
                         { data: 'dept_name' },
                         { data: 'leave_from' },
                         { data: 'leave_to' },
