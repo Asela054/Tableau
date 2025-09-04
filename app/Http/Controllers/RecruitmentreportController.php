@@ -29,6 +29,7 @@ class RecruitmentreportController extends Controller
             ->select(
                 'employee_requrement_details.*', 
                 'employees.emp_name_with_initial',
+                'employees.calling_name',
                 DB::raw('(SELECT emp_name_with_initial FROM employees WHERE id = employee_requrement_details.first_interviwer) as first_interviewer_name'),
                 DB::raw('(SELECT emp_name_with_initial FROM employees WHERE id = employee_requrement_details.second_interviewer) as second_interviewer_name'),
                 DB::raw('(SELECT emp_name_with_initial FROM employees WHERE id = employee_requrement_details.third_interviewer) as third_interviewer_name')
@@ -60,6 +61,7 @@ class RecruitmentreportController extends Controller
                 ->select(
                     'erd.id as interview_id',
                     'e.emp_name_with_initial',
+                     'e.calling_name',
                     'd.name as empdepartment',
                     DB::raw("'First Interviewer' as interviewer_role"),
                     'erd.first_interview_date as interview_date'
@@ -73,6 +75,7 @@ class RecruitmentreportController extends Controller
                 ->select(
                     'erd.id as interview_id',
                     'e.emp_name_with_initial',
+                    'e.calling_name',
                     'd.name as empdepartment',
                     DB::raw("'Second Interviewer' as interviewer_role"),
                     'erd.second_interview_date as interview_date'
@@ -86,6 +89,7 @@ class RecruitmentreportController extends Controller
                 ->select(
                     'erd.id as interview_id',
                     'e.emp_name_with_initial',
+                    'e.calling_name',
                     'd.name as empdepartment',
                     DB::raw("'Third Interviewer' as interviewer_role"),
                     'erd.third_interview_date as interview_date'

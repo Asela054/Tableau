@@ -122,7 +122,7 @@ $(document).ready(function() {
         },
         columns: [
             { data: 'id' },
-            { data: 'emp_name_with_initial' },
+            { data: 'employee_display' },
             { data: 'location' },
             { data: 'department_name' },
             { data: 'emp_birthday' },
