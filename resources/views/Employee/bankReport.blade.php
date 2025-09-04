@@ -144,7 +144,7 @@
                 },
                 columns: [
                     { data: 'id' },
-                    { data: 'emp_name_with_initial' },
+                    { data: 'employee_display' },
                     { data: 'location' },
                     { data: 'dept_name' },
                     { data: 'bank' },

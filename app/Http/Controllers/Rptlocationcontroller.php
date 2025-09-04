@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\EmployeeHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
@@ -35,7 +36,7 @@ class Rptlocationcontroller extends Controller
         $results = DB::table('job_attendance')
             ->leftjoin('employees', 'job_attendance.employee_id', '=', 'employees.emp_id')
             ->leftjoin('branches', 'job_attendance.location_id', '=', 'branches.id')
-            ->select('job_attendance.*','employees.emp_name_with_initial As emp_name','branches.location')
+            ->select('job_attendance.*','employees.emp_name_with_initial','employees.emp_id','employees.calling_name','branches.location')
             ->whereIn('job_attendance.status', [1, 2])
             ->where('job_attendance.approve_status', 1);
 
@@ -54,6 +55,11 @@ class Rptlocationcontroller extends Controller
             $results->where('job_attendance.location_status', $attendacetype);
         }
         $datalist = $results->get();
+
+        $datalist->transform(function ($row) {
+        $row->employee_display = EmployeeHelper::getDisplayName($row);
+            return $row;
+        });
 
         return response()->json(['data' => $datalist]);
 

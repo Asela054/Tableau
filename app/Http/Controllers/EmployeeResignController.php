@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\EmployeeHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
@@ -53,6 +54,17 @@ class EmployeeResignController extends Controller
 
     return Datatables::of($types)
         ->addIndexColumn()
+         ->addColumn('employee_display', function ($row) {
+                   return EmployeeHelper::getDisplayName($row);
+                   
+        })
+        ->filterColumn('employee_display', function($query, $keyword) {
+            $query->where(function($q) use ($keyword) {
+                $q->where('employees.emp_name_with_initial', 'like', "%{$keyword}%")
+                ->orWhere('employees.calling_name', 'like', "%{$keyword}%")
+                ->orWhere('employees.emp_id', 'like', "%{$keyword}%");
+            });
+        })
         ->addColumn('action', function ($row) {
         })
         ->rawColumns(['action'])
