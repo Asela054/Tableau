@@ -26,6 +26,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 use stdClass;
+use Session;
 
 
 class Report extends Controller
@@ -41,7 +42,15 @@ class Report extends Controller
         if (!$permission) {
             abort(403);
         }
-        return view('Report.employeereport');
+
+        if (!Session::has('company_name')) {
+            $company_name = DB::table('companies')->value('name');
+            Session::put('company_name', $company_name);
+        } else {
+            $company_name = Session::get('company_name');
+        }
+        
+        return view('Report.employeereport', compact('company_name'));
     }
 
     public function employee_report_list(Request $request)
