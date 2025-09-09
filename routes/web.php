@@ -493,12 +493,6 @@ Route::post('work_hours_save', 'WorkHoursController@work_hours_save')->name('wor
 Route::get('employee_resign_report', 'EmployeeResignController@employee_resign_report')->name('employee_resign_report');
 Route::get('get_resign_employees', 'EmployeeResignController@get_resign_employees')->name('get_resign_employees');
 
-// User account Details
-Route::get('useraccountsummery', 'UserAccountController@useraccountsummery_list')->name('useraccountsummery');
-Route::post('get_employee_monthlysummery', 'UserAccountController@get_employee_monthlysummery')->name('get_employee_monthlysummery');
-
-Route::get('userlogininformation', 'UserAccountController@userlogininformation_list')->name('userlogininformation');
-
 
 // Absent Report
 Route::get('employee_absent_report', 'EmployeeAbsentController@employee_absent_report')->name('employee_absent_report');
@@ -1212,7 +1206,6 @@ Route::get('useraccountsummery', 'UserAccountController@useraccountsummery_list'
 Route::post('get_employee_monthlysummery', 'UserAccountController@get_employee_monthlysummery')->name('get_employee_monthlysummery');
 Route::get('user_leave_list',['uses' => 'UserAccountController@leave_list_dt', 'as' => 'user_leave_list']);
 Route::get('userlogininformation', 'UserAccountController@userlogininformation_list')->name('userlogininformation');
-Route::post('get_employee_attendance', 'UserAccountController@get_attendance_by_employee_data')->name('get_employee_attendance');
 
 Route::post('/get_employee_salarysheet', 'UserAccountController@downloadSalarySheet')->name('get_employee_salarysheet');
 Route::post('/getEmployeeLeaveStatusSummary', 'UserAccountController@getemployeeleavestatus');
@@ -1459,6 +1452,14 @@ Route::get('/productiontaskapprove' ,'ProductionTaskApproveController@index')->n
 Route::post('/productiontaskapprovegenerate' ,'ProductionTaskApproveController@generateproductiontask')->name('productiontaskapprovegenerate');
 Route::post('/approveproductiontask' ,'ProductionTaskApproveController@approveproductiontask')->name('approveproductiontask');
 
+Route::resource('LocationOt', 'LocationOtController');
+Route::get('LocationOt',['uses' => 'LocationOtController@index', 'as' => 'LocationOt']);
+Route::get('LocationOtlist', 'LocationOtController@letterlist')->name('LocationOtlist'); 
+Route::post('addLocationOt',['uses' => 'LocationOtController@store', 'as' => 'addLocationOt']); 
+Route::post('LocationOt/update', 'LocationOtController@update')->name('LocationOt.update');
+Route::get('LocationOt/destroy/{id}', 'LocationOtController@destroy');
+/*--  Location Ot ----*/
+
 Route::get('unauthorizejobattendanceapprove', 'JobAttendaceApproveController@unauthorizeattendace')->name('unauthorizejobattendanceapprove');
 
 //Job location allwance Controller Routes
@@ -1467,6 +1468,11 @@ Route::post('/locationallwanceapprovegenerate' ,'JoblocationallwanceController@g
 Route::post('/approvelocationallowance' ,'JoblocationallwanceController@approvelocationallowance')->name('approvelocationallowance');
 
 Route::get('/getattendancesummarychart' ,'DashboarddetailedController@attendacechart')->name('getattendancesummarychart');
+
+// absent nopay controller 
+Route::get('/absentnopay' ,'DepartmentviseNopayController@index')->name('absentnopay');
+Route::post('/getabsetnopay' ,'DepartmentviseNopayController@getabsetnopay')->name('getabsetnopay');
+Route::post('/applyabsentnopay' ,'DepartmentviseNopayController@applyabsentnopay')->name('applyabsentnopay');
 
 Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');

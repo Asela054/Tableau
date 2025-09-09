@@ -18,8 +18,17 @@ class RptLeaveController extends Controller
         if (!$permission) {
             abort(403);
         }
-        return view('Report.leavereport' );
+
+        if (!Session::has('company_name')) {
+            $company_name = DB::table('companies')->value('name');
+            Session::put('company_name', $company_name);
+        } else {
+            $company_name = Session::get('company_name');
+        }
+
+        return view('Report.leavereport' ,compact('company_name'));
     }
+
 
     public function leave_report_list(Request $request)
     {

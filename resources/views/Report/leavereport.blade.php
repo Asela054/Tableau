@@ -1,4 +1,4 @@
-<?php $page_stitle = 'Report on Employee Leaves - Multi Offset'; ?>
+<?php $page_stitle = 'Report on Employee Leaves '.$company_name.''; ?>
 @extends('layouts.app')
 
 @section('content')

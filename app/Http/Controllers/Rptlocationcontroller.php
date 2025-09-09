@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Auth;
 use DateTime;
 use DB;
+use Session;
 
 class Rptlocationcontroller extends Controller
 {
@@ -22,7 +23,15 @@ class Rptlocationcontroller extends Controller
         ->where('deleted',0)
         ->where('is_resigned',0)
         ->get();
-        return view('departmetwise_reports.joballocationreport', compact('locations','employees'));
+
+        if (!Session::has('company_name')) {
+            $company_name = DB::table('companies')->value('name');
+            Session::put('company_name', $company_name);
+        } else {
+            $company_name = Session::get('company_name');
+        }
+
+        return view('departmetwise_reports.joballocationreport', compact('locations','employees','company_name'));
     }
 
     public function joblocationreport()

@@ -7,7 +7,8 @@
                          $user->can('work-category-list') || 
                          $user->can('month-work-hours-list') ||
                          $user->can('SalaryAdjustment-list') ||
-                         $user->can('Leave-Deduction-list');
+                         $user->can('Leave-Deduction-list') ||
+                         $user->can('Location-OT-list');
   @endphp
 
   @if($hasCorporateAccess)
@@ -29,6 +30,9 @@
         @endif
         @if($user->can('Leave-Deduction-list'))
         <a role="button" class="btn navbtncolor" href="{{ url('/LeaveDeduction') }}" id="leave_deductionlink">Leave Deductions <span class="caret"></span></a>
+        @endif
+        @if($user->can('Location-OT-list'))
+        <a role="button" class="btn navbtncolor" href="{{ url('/LocationOt') }}" id="location_ot_link">Location OT <span class="caret"></span></a>
         @endif
       </div>
   @endif

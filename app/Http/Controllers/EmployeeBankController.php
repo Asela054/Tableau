@@ -163,7 +163,15 @@ class EmployeeBankController extends Controller
             abort(403);
         }
         $banks = Bank::whereIn('status', [1,2])->get();
-        return view('Employee.bankReport', compact('banks'));
+
+        if (!Session::has('company_name')) {
+            $company_name = DB::table('companies')->value('name');
+            Session::put('company_name', $company_name);
+        } else {
+            $company_name = Session::get('company_name');
+        }
+
+        return view('Employee.bankReport', compact('banks','company_name'));
     }
 
     public function bank_report_list(Request $request)
