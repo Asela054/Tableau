@@ -139,7 +139,7 @@ $(document).ready(function() {
             columns: [
                 { data: 'date' },
                 { data: 'emp_id' },
-                { data: 'emp_name_with_initial' },
+                { data: 'employee_display' },
                 { data: 'departmentname' },
                 { data: 'location' },
             ],

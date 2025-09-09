@@ -370,6 +370,7 @@ class RptAttendanceController extends Controller
             $query3 = 'SELECT   
                         employees.emp_id,
                         employees.emp_name_with_initial,
+                        employees.calling_name,
                         employees.emp_etfno,
                         branches.location as b_location,
                         departments.name as dept_name,
@@ -444,6 +445,7 @@ class RptAttendanceController extends Controller
                         $objattendance = new stdClass();
                         $objattendance->emp_id = $record->emp_id;
                         $objattendance->emp_name_with_initial = $record->emp_name_with_initial;
+                        $objattendance->calling_name = $record->calling_name;
                         $objattendance->emp_etfno = $record->emp_etfno;
                         $objattendance->b_location = $record->b_location;
                         $objattendance->dept_name = $record->dept_name;
@@ -460,6 +462,7 @@ class RptAttendanceController extends Controller
                         $objattendance = new stdClass();
                         $objattendance->emp_id = $record->emp_id;
                         $objattendance->emp_name_with_initial = $record->emp_name_with_initial;
+                        $objattendance->calling_name = $record->calling_name;
                         $objattendance->emp_etfno = $record->emp_etfno;
                         $objattendance->b_location = $record->b_location;
                         $objattendance->dept_name = $record->dept_name;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Bank;
 use App\Daily_task;
 use App\EmployeeBank;
+use App\Helpers\EmployeeHelper;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
@@ -284,6 +285,8 @@ class EmployeeBankController extends Controller
             "bb.code as branch_code",
             "employees.emp_id",
             "employees.emp_name_with_initial",
+            "employees.calling_name",
+            "employees.emp_id",
             "branches.location",
             "departments.name as dept_name"
         );
@@ -306,6 +309,11 @@ class EmployeeBankController extends Controller
                 "branch_code" => $record->branch_code,
                 "emp_id" => $record->emp_id,
                 "emp_name_with_initial" => $record->emp_name_with_initial,
+                "employee_display" => EmployeeHelper::getDisplayName((object)[
+                    'emp_id' => $record->emp_id,
+                    'emp_name_with_initial' => $record->emp_name_with_initial,
+                    'calling_name' => $record->calling_name
+                ]),
                 "location" => $record->location,
                 "dept_name" => $record->dept_name
             );

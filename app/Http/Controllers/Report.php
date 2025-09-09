@@ -8,6 +8,7 @@ use App\Branch;
 use App\Attendance;
 use App\EmployeePaySlip;
 use App\EmployeeSalary;
+use App\Helpers\EmployeeHelper;
 use App\Holiday;
 use App\Leave;
 use App\PayrollProfile;
@@ -157,6 +158,8 @@ class Report extends Controller
         $query->select(
             "employees.id",
             "employees.emp_name_with_initial",
+            "employees.calling_name",
+            "employees.emp_id",
             "branches.location",
             "departments.name as dept_name",
             "employees.emp_birthday",
@@ -186,6 +189,11 @@ class Report extends Controller
             $data_arr[] = array(
                 "id" => $record->id,
                 "emp_name_with_initial" => $record->emp_name_with_initial,
+                "employee_display" => EmployeeHelper::getDisplayName((object)[
+                    'emp_id' => $record->emp_id,
+                    'emp_name_with_initial' => $record->emp_name_with_initial,
+                    'calling_name' => $record->calling_name
+                ]),
                 "location" => $record->location,
                 "dept_name" => $record->dept_name,
                 "emp_birthday" => $record->emp_birthday,

@@ -19,7 +19,7 @@
                             <select name="company" id="company" class="form-control form-control-sm">
                                 <option value="">Please Select</option>
                                 @foreach ($locations as $location){
-                                    <option value="{{$location->id}}">{{$location->location_name}}</option>
+                                    <option value="{{$location->id}}">{{$location->location}}</option>
                                 }  
                                 @endforeach
                             </select>
@@ -123,9 +123,9 @@ $(document).ready(function() {
                 'employee_f': employee_f},
         },
         columns: [
-            { data: 'emp_name_with_initial' },
+            { data: 'employee_display' },
             { data: 'attendance_date' },
-            { data: 'location_name' },
+            { data: 'location' },
             { data: 'on_time' },
             { data: 'off_time' }
         ],
