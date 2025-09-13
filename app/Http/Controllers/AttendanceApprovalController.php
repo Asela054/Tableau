@@ -73,9 +73,9 @@ class AttendanceApprovalController extends Controller
             ->leftJoin('branches', 'at1.location', '=', 'branches.id')
             ->leftJoin('departments', 'departments.id', '=', 'employees.emp_department');
 
-        if ($department != '' && $department != 'All') {
-            $query->where(['departments.id' => $department]);
-        }
+        // if ($department != '' && $department != 'All') {
+        //     $query->where(['departments.id' => $department]);
+        // }
 
         $query->where('employees.deleted', 0);
         $query->where('employees.is_resigned', 0);

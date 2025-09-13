@@ -1474,6 +1474,11 @@ Route::get('/absentnopay' ,'DepartmentviseNopayController@index')->name('absentn
 Route::post('/getabsetnopay' ,'DepartmentviseNopayController@getabsetnopay')->name('getabsetnopay');
 Route::post('/applyabsentnopay' ,'DepartmentviseNopayController@applyabsentnopay')->name('applyabsentnopay');
 
+//absent deduction approval Controller
+Route::get('/absentdeductionapproval' ,'AbsentdeductionApproveController@index')->name('absentdeductionapproval');
+Route::post('/absentdeductioncreate' ,'AbsentdeductionApproveController@absentdeduction')->name('absentdeductioncreate');
+Route::post('/absentdeductionapprove' ,'AbsentdeductionApproveController@approveldeduction')->name('absentdeductionapprove');
+
 Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');
     Artisan::call('config:clear');

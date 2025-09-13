@@ -35,4 +35,8 @@ class Holidaydiductionapproved extends Model
         }
         return $absentdaycount;
     }
+
+
+    
+
 }
