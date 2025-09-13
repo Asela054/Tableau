@@ -19,7 +19,8 @@
                          auth()->user()->can('Lateminites-Approvel-list') ||
                          auth()->user()->can('MealAllowanceApprove-list') ||
                          auth()->user()->can('Holiday-DeductionApprove-list') ||
-                         auth()->user()->can('Absent-Nopay-list');
+                         auth()->user()->can('Absent-Nopay-list')||
+                         auth()->user()->can('Absent-Deduction-Approve-list');
   @endphp
   @if($hasAttendanceAccess)
   <div class="dropdown">
@@ -76,6 +77,9 @@
             @endif
             @if(auth()->user()->can('Holiday-DeductionApprove-list'))
             <li><a class="dropdown-item" href="{{ route('holidaydeductionapproval')}}">Leave Deduction Approval</a></li>
+            @endif
+             @if(auth()->user()->can('Absent-Deduction-Approve-list'))
+            <li><a class="dropdown-item" href="{{ route('absentdeductionapproval')}}">Absent Deduction Approval</a></li>
             @endif
         </ul>
   </div>
