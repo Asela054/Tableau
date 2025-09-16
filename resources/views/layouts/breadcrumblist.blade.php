@@ -352,6 +352,18 @@
       <li class="breadcrumb-item"><a href="#" class="breadcrumb-link breadcumpfont">Daily Tasks</a></li>
       <li class="breadcrumb-item"><a href="{{route('employeetaskreport')}}" class="breadcrumb-link breadcumpfont">Employee Tasks</a></li>
     </ol>
+    @elseif(request()->route()->getName() == 'meterreadingcount')
+    <ol class="breadcrumb custom-breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ route('employeemanagementdashboard')}}" class="breadcrumb-link breadcumpfont">Employee Management</a></li>
+      <li class="breadcrumb-item"><a href="#" class="breadcrumb-link breadcumpfont">Meter Reading</a></li>
+      <li class="breadcrumb-item"><a href="{{route('meterreadingcount')}}" class="breadcrumb-link breadcumpfont">Meter Reading Count</a></li>
+    </ol>
+    @elseif(request()->route()->getName() == 'meterreadingapprove')
+    <ol class="breadcrumb custom-breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ route('employeemanagementdashboard')}}" class="breadcrumb-link breadcumpfont">Employee Management</a></li>
+      <li class="breadcrumb-item"><a href="#" class="breadcrumb-link breadcumpfont">Meter Reading</a></li>
+      <li class="breadcrumb-item"><a href="{{route('meterreadingapprove')}}" class="breadcrumb-link breadcumpfont">Meter Reading Approve</a></li>
+    </ol>
 {{-- Attendance and leave breadcrump list --}}
 
 
