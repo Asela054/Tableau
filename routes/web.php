@@ -1479,6 +1479,21 @@ Route::get('/absentdeductionapproval' ,'AbsentdeductionApproveController@index')
 Route::post('/absentdeductioncreate' ,'AbsentdeductionApproveController@absentdeduction')->name('absentdeductioncreate');
 Route::post('/absentdeductionapprove' ,'AbsentdeductionApproveController@approveldeduction')->name('absentdeductionapprove');
 
+
+// Meter Reading Controller Routes
+Route::get('/meterreadingcount', 'MeterReadingController@index')->name('meterreadingcount');
+Route::post('/meter_reading_insert', 'MeterReadingController@insert')->name('meter_reading_insert');
+Route::post('/meter_reading_edit', 'MeterReadingController@edit')->name('meter_reading_edit');
+Route::post('/meter_reading_update', 'MeterReadingController@update')->name('meter_reading_update');
+Route::post('/meter_reading_delete', 'MeterReadingController@delete')->name('meter_reading_delete');
+Route::post('/meter_reading_upload_csv', 'MeterReadingController@meter_reading_upload_csv')->name('meter_reading_upload_csv');
+
+//Meter Reading Approve controller
+Route::get('/meterreadingapprove' ,'MeterReadingApproveController@index')->name('meterreadingapprove');
+Route::post('/meter_reading_approvegenerate' ,'MeterReadingApproveController@generatemeterreading')->name('meter_reading_approvegenerate');
+Route::post('/approvemeterreading' ,'MeterReadingApproveController@approvemeterreading')->name('approvemeterreading');
+
+
 Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');
     Artisan::call('config:clear');
