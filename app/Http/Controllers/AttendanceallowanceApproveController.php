@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AbsentDeductionapproved;
+use App\Attendanceallowanceapproved;
 use App\EmployeeTermPayment;
 use App\Helpers\EmployeeHelper;
 use App\Holidaydiductionapproved;
@@ -12,25 +13,27 @@ use Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class AbsentdeductionApproveController extends Controller
+
+class AttendanceallowanceApproveController extends Controller
 {
+    
      public function index()
      {
         $user = auth()->user();
-        $permission = $user->can('Absent-Deduction-Approve-list');
+        $permission = $user->can('Attendance-Allowance-Approve-list');
 
         if(!$permission) {
             abort(403);
         }
 
         $remunerations=DB::table('remunerations')->select('*')->where('allocation_method', 'TERMS')->get();
-        return view('Leave.absent_deduction_approve', compact('remunerations'));
+        return view('Leave.attendance_allowance_approve', compact('remunerations'));
     }
 
-        public function absentdeduction(Request $request)
+       public function attendanceallowance(Request $request)
     {
 
-        $permission = \Auth::user()->can('Absent-Deduction-Approve-list');
+        $permission = \Auth::user()->can('Attendance-Allowance-Approve-list');
         if (!$permission) {
             abort(403);
         }
@@ -100,24 +103,23 @@ class AbsentdeductionApproveController extends Controller
                      // Calculate attendance percentage
                     $attendancePercentage = ($workday / $payrollworkingdays) * 100;
 
-                    // Apply deduction rules based on attendance percentage and absent days
-                    if ($attendancePercentage < 85) {
-                        $daysBelowThreshold = $payrollworkingdays - $workday;
-                        
-                        if ($daysBelowThreshold == 1) {
-                            $deductionamount = $daysalary * 0.5; // 1/2 day salary
-                        } elseif ($daysBelowThreshold == 2) {
-                            $deductionamount = $daysalary * 1; // 1 day salary
-                        } elseif ($daysBelowThreshold == 3) {
-                            $deductionamount = $daysalary * 1.5; // 1 1/2 day salary
-                        } elseif ($daysBelowThreshold >= 4) {
-                            $deductionamount = $daysalary * 2; // 2 day salary
-                        }
+                    // Apply deduction rules based on attendance percentage
+                    if ($attendancePercentage == 100) {
+                        $deductionamount = 5000;
+                    } elseif ($attendancePercentage >= 95 && $attendancePercentage < 100) {
+                        $deductionamount = 4000;
+                    } elseif ($attendancePercentage >= 90 && $attendancePercentage < 95) {
+                        $deductionamount = 3000;
+                    } elseif ($attendancePercentage >= 85 && $attendancePercentage < 90) {
+                        $deductionamount = 2000;
+                    } else {
+                        // Less than 85% - Not applicable (deductionamount remains 0)
+                        $deductionamount = 0;
                     }
 
 
                 //check holiday deductions approved on given date range
-                $approveholidayductions = DB::table('absent_deduction_approve')
+                $approveholidayductions = DB::table('attendance_allowance_approve')
                 ->where('emp_id', $empId)
                 ->where('remuneration_id', $remunerationtype)
                 ->whereBetween('from_date', [$firstDate, $lastDate]) 
@@ -125,16 +127,19 @@ class AbsentdeductionApproveController extends Controller
                 ->first();
                 $approveholidayductionsstatus = $approveholidayductions ? 1 : 0;
                 
-                $datareturn[] = [
-                    'deductionsstatus' => $approveholidayductionsstatus,
-                    'empid' => $empId,
-                    'emp_name' => EmployeeHelper::getDisplayName($employeeObj),
-                    'payroll_Profile' => $payrollProfileId,
-                    'absent_Days' => $absentdays,
-                    'remuneration_id' => $remunerationtype,
-                    'attendance_percentage' => number_format($attendancePercentage, 2) . '%',
-                    'deduction_amount' => number_format($deductionamount, 2) 
-                ];  
+                    if( $deductionamount != 0){
+                        $datareturn[] = [
+                        'deductionsstatus' => $approveholidayductionsstatus,
+                        'empid' => $empId,
+                        'emp_name' => EmployeeHelper::getDisplayName($employeeObj),
+                        'payroll_Profile' => $payrollProfileId,
+                        'absent_Days' => $absentdays,
+                        'remuneration_id' => $remunerationtype,
+                        'attendance_percentage' => number_format($attendancePercentage, 2) . '%',
+                        'deduction_amount' => number_format($deductionamount, 2) 
+                       ];  
+                    }
+               
 
                 }else{
                     continue;
@@ -143,9 +148,9 @@ class AbsentdeductionApproveController extends Controller
         return response()->json([ 'data' => $datareturn ]);
     }
 
-    public function approveldeduction(Request $request)
+      public function approvelallowance(Request $request)
     {
-        $permission = \Auth::user()->can('Absent-Deduction-Approve-Create');
+        $permission = \Auth::user()->can('Attendance-Allowance-Approve-Create');
         if (!$permission) {
             abort(403);
         }
@@ -167,7 +172,6 @@ class AbsentdeductionApproveController extends Controller
 
             $empid = $row['empid'];
             $epfno = $row['emp_name'];
-            $Absent_Days = $row['Absent_Days'];
             $attendance_percentage = $row['attendance_percentage'];
             $deduction_amount = $row['deduction_amount'];
             $deduction_amount = str_replace([','], '', $deduction_amount);
@@ -177,7 +181,7 @@ class AbsentdeductionApproveController extends Controller
 
             if( $deduction_amount != 0){
 
-                $allowance = DB::table('absent_deduction_approve')
+                $allowance = DB::table('attendance_allowance_approve')
                 ->where('emp_id', $empid)
                 ->where('remuneration_id', $remunerationid)
                 ->whereBetween('from_date', [$firstDate, $lastDate]) 
@@ -185,12 +189,11 @@ class AbsentdeductionApproveController extends Controller
                 ->first();
     
                 if($allowance){
-                    DB::table('absent_deduction_approve')
+                    DB::table('attendance_allowance_approve')
                     ->where('emp_id', $empid)
                     ->where('from_date', [$firstDate, $lastDate])
                     ->where('to_date',[$firstDate, $lastDate])
                     ->update([
-                        'total_absent_days' => $Absent_Days,
                         'attendance_precentage' => $attendance_percentage,
                         'deduction_amount' => $deduction_amount,
                         'remuneration_id' => $remunerationid,
@@ -227,11 +230,10 @@ class AbsentdeductionApproveController extends Controller
                         'updated_at' => $current_date_time
                     ]);
                 }else{
-                    $absentdeduction = new AbsentDeductionapproved();
+                    $absentdeduction = new Attendanceallowanceapproved();
                     $absentdeduction->emp_id = $empid;
                     $absentdeduction->from_date = $firstDate;
                     $absentdeduction->to_date = $lastDate;
-                    $absentdeduction->total_absent_days = $Absent_Days;
                     $absentdeduction->attendance_precentage = $attendance_percentage;
                     $absentdeduction->deduction_amount = $deduction_amount;
                     $absentdeduction->remuneration_id = $remunerationid;
@@ -283,9 +285,7 @@ class AbsentdeductionApproveController extends Controller
                 }
             }
         }
-        return response()->json(['success' => 'Absent Deduction is successfully Approved']);
+        return response()->json(['success' => 'Attendance Allowance is successfully Approved']);
     }
-
-
 
 }

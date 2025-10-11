@@ -641,7 +641,7 @@ class LeaveController extends Controller
             
             // Casual leave calculation
             if ($years_of_service == 0) {
-            $casual_leaves = number_format((7 / 12) * $months_of_service, 2);
+            $casual_leaves = number_format((6 / 12) * $months_of_service, 2);
             } else {
                 $casual_leaves = 7;
             }

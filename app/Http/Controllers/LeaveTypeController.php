@@ -215,22 +215,29 @@ class LeaveTypeController extends Controller
         foreach ($employees as $employee)
         {
             $emp_join_date = $employee->emp_join_date;
+            $empid = $employee->emp_id;
+        
             $join_year = Carbon::parse($emp_join_date)->year;
             $join_month = Carbon::parse($emp_join_date)->month;
             $join_date = Carbon::parse($emp_join_date)->day;
 
+           
+
+             
 
             $like_from_date = date('Y').'-01-01';
             $like_from_date2 = date('Y').'-12-31';
 
             $total_taken_annual_leaves = DB::table('leaves')
-                ->where('leaves.emp_id', '=', $employee->emp_id)
+                ->where('leaves.emp_id', '=', $empid)
                 ->whereBetween('leaves.leave_from', [$like_from_date, $like_from_date2])
                 ->where('leaves.leave_type', '=', '1')
                 ->where('leaves.status', '=', 'Approved')
                 ->get()->toArray();
 
             $current_year_taken_a_l = 0;
+
+            
             foreach ($total_taken_annual_leaves as $tta){
                 $leave_from = $tta->leave_from;
                 $leave_to = $tta->leave_to;
@@ -267,11 +274,14 @@ class LeaveTypeController extends Controller
             $like_from_date_cas = date('Y').'-01-01';
             $like_from_date2_cas = date('Y').'-12-31';
             $total_taken_casual_leaves = DB::table('leaves')
-                ->where('leaves.emp_id', '=', $request->emp_id)
+                ->where('leaves.emp_id', '=', $empid)
                 ->whereBetween('leaves.leave_from', [$like_from_date_cas, $like_from_date2_cas])
                 ->where('leaves.leave_type', '=', '2')
                 ->where('leaves.status', '=', 'Approved')
-                ->get()->toArray();
+                ->get();
+
+
+                
 
             $current_year_taken_c_l = 0;
 
@@ -295,6 +305,8 @@ class LeaveTypeController extends Controller
                     $current_year_taken_c_l += $tta->no_of_days;
                 }
             }
+
+           
 
             $leave_msg = '';
 
@@ -361,23 +373,30 @@ class LeaveTypeController extends Controller
             // Casual leave calculation
             if ($years_of_service == 0) {
                 // First year - 0.5 day for every  completed month
-               $casual_leaves = number_format((7 / 12) * $months_of_service, 2);
+               $casual_leaves = number_format((6 / 12) * $months_of_service, 2);
 
             } else {
                 $casual_leaves = 7;
             }
 
+             
 
             $total_no_of_annual_leaves = $annual_leaves;
             $total_no_of_casual_leaves = $casual_leaves;
 
+           
+
             $available_no_of_annual_leaves = $total_no_of_annual_leaves - $current_year_taken_a_l;
             $available_no_of_casual_leaves = $total_no_of_casual_leaves - $current_year_taken_c_l;
+
+            
 
             if($employee->emp_status != 2){
                 $emp_status = DB::table('employment_statuses')->where('id', $employee->emp_status)->first();
                 $leave_msg = 'Casual Leaves - '.$emp_status->emp_status.' Employee can have only a half day per month (Not a permanent employee)';
             }
+
+
 
             $results = array(
                 "emp_id" => $employee->emp_id,

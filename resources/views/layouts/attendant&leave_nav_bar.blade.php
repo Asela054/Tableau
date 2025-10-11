@@ -20,7 +20,8 @@
                          auth()->user()->can('MealAllowanceApprove-list') ||
                          auth()->user()->can('Holiday-DeductionApprove-list') ||
                          auth()->user()->can('Absent-Nopay-list')||
-                         auth()->user()->can('Absent-Deduction-Approve-list');
+                         auth()->user()->can('Absent-Deduction-Approve-list')||
+                         auth()->user()->can('Attendance-Allowance-Approve-list');
   @endphp
   @if($hasAttendanceAccess)
   <div class="dropdown">
@@ -80,6 +81,9 @@
             @endif
              @if(auth()->user()->can('Absent-Deduction-Approve-list'))
             <li><a class="dropdown-item" href="{{ route('absentdeductionapproval')}}">Absent Deduction Approval</a></li>
+            @endif
+             @if(auth()->user()->can('Attendance-Allowance-Approve-list'))
+            <li><a class="dropdown-item" href="{{ route('attendanceallowanceapproval')}}">Attendance Allowance Approval</a></li>
             @endif
         </ul>
   </div>
@@ -154,6 +158,7 @@
            <li><a class="dropdown-item" href="{{ route('unauthorizejobattendanceapprove')}}">Unauthorized Location Attendance Approve</a></li>
             @endif
             <li><a class="dropdown-item" href="{{ route('locationallwanceapprove')}}">Location Allowance Approval</a></li>
+            
             @if(auth()->user()->can('Job-Meal-list'))
             <li><a class="dropdown-item" href="{{ route('jobmealallowance')}}">Meal Allowance</a></li>
             @endif

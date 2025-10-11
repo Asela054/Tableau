@@ -1479,6 +1479,10 @@ Route::get('/absentdeductionapproval' ,'AbsentdeductionApproveController@index')
 Route::post('/absentdeductioncreate' ,'AbsentdeductionApproveController@absentdeduction')->name('absentdeductioncreate');
 Route::post('/absentdeductionapprove' ,'AbsentdeductionApproveController@approveldeduction')->name('absentdeductionapprove');
 
+//absent deduction approval Controller
+Route::get('/attendanceallowanceapproval' ,'AttendanceallowanceApproveController@index')->name('attendanceallowanceapproval');
+Route::post('/attendanceallowancecreate' ,'AttendanceallowanceApproveController@attendanceallowance')->name('attendanceallowancecreate');
+Route::post('/attendanceallowanceapprove' ,'AttendanceallowanceApproveController@approvelallowance')->name('attendanceallowanceapprove');
 
 // Meter Reading Controller Routes
 Route::get('/meterreadingcount', 'MeterReadingController@index')->name('meterreadingcount');
