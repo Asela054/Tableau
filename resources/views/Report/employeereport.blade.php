@@ -41,7 +41,8 @@
                             <table class="table table-striped table-bordered table-sm small" id="emptable">
                                 <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>EMP No</th>
+                                    <th>EPF No</th>
                                     <th>Name with Initial</th>
                                     <th>Location</th>
                                     <th>Department</th>
@@ -134,7 +135,8 @@ $(document).ready(function() {
                 "data": {'department':department},
             },
             columns: [
-                { data: 'id' },
+                { data: 'emp_id' },
+                { data: 'emp_etfno' },
                 { data: 'employee_display' },
                 { data: 'location' },
                 { data: 'dept_name' },
