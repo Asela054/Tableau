@@ -160,6 +160,8 @@ class Report extends Controller
             "employees.emp_name_with_initial",
             "employees.calling_name",
             "employees.emp_id",
+            "employees.emp_etfno",
+            "employees.service_no",
             "branches.location",
             "departments.name as dept_name",
             "employees.emp_birthday",
@@ -188,6 +190,8 @@ class Report extends Controller
         foreach ($records as $record) {
             $data_arr[] = array(
                 "id" => $record->id,
+                "emp_id" => $record->emp_id,
+                "emp_etfno" => $record->emp_etfno,
                 "emp_name_with_initial" => $record->emp_name_with_initial,
                 "employee_display" => EmployeeHelper::getDisplayName((object)[
                     'emp_id' => $record->emp_id,

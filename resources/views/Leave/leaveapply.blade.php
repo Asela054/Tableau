@@ -881,10 +881,10 @@
                             document.body.appendChild(form);
                             form.submit();
 
-                              html = '<div class="alert alert-success">' + data.success + '</div>';
+                            html = '<div class="alert alert-success">' + data.success + '</div>';
                             $('#formTitle')[0].reset();
                             setTimeout(function() { $('#formModal').modal('hide'); }, 1000);
-
+                            location.reload();
                         }
                         $('#form_result').html(html);
                     }
