@@ -14,12 +14,20 @@
                 <div class="card-body">
                     <form class="form-horizontal" id="formFilter">
                         <div class="form-row mb-1">
-                            <div class="col-md-3">
+                            <div class="col-md-2">
+                                <label class="small font-weight-bold text-dark">Company</label>
+                                <select name="company" id="company_f" class="form-control form-control-sm"></select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="small font-weight-bold text-dark">Department</label>
+                                <select name="department" id="department_f" class="form-control form-control-sm"></select>
+                            </div>
+                            <div class="col-md-2">
                                 <label class="small font-weight-bold text-dark">Employee</label>
                                 <select name="employee" id="employee_f" class="form-control form-control-sm">
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="small font-weight-bold text-dark">Date : From - To</label>
                                 <div class="input-group input-group-sm mb-3">
                                     <input type="date" id="from_date" name="from_date" class="form-control form-control-sm border-right-0" placeholder="yyyy-mm-dd" required>
@@ -29,8 +37,9 @@
                                     <input type="date" id="to_date" name="to_date" class="form-control" placeholder="yyyy-mm-dd" required>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <button type="submit" class="btn btn-primary btn-sm filter-btn float-right" id="btn-filter" style="margin-top: 25px;"> Filter</button>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary btn-sm filter-btn float-right ml-2" id="btn-filter"><i class="fas fa-search mr-2"></i>Filter</button>
+                                <button type="button" class="btn btn-danger btn-sm filter-btn float-right" id="btn-clear"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Clear</button>
                             </div>
                         </div>
 
@@ -116,79 +125,144 @@ $(document).ready(function(){
     $('#employee_menu_link_icon').addClass('active');
     $('#meterreading').addClass('navbtnactive');
 
+     let company_f = $('#company_f');
      let employee_f = $('#employee_f');
+     let department_f = $('#department_f');
 
-       employee_f.select2({
-            placeholder: 'Select...',
-            width: '100%',
-            allowClear: true,
+    company_f.select2({
+        placeholder: 'Select a Company',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '{{url("company_list_sel2")}}',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1
+                }
+            },
+            cache: true
+        }
+    });
+
+    department_f.select2({
+        placeholder: 'Select a Department',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '{{url("department_list_sel2")}}',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1,
+                    company: company_f.val(),
+                }
+            },
+            cache: true
+        }
+    });
+
+    employee_f.select2({
+        placeholder: 'Select...',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '{{url("employee_list_sel2")}}',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1,
+                    company: company_f.val(),
+                    department: department_f.val()
+                }
+            },
+            cache: true
+        }
+    });
+
+    function load_dt(company, department, employee, from_date, to_date) {
+        $('#dataTable').DataTable({
+            lengthMenu: [[10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"]],
+            processing: true,
+            serverSide: true,
             ajax: {
-                url: '{{url("employee_list_task")}}',
-                dataType: 'json',
-                data: function(params) {
-                    return {
-                        term: params.term || '',
-                        page: params.page || 1
-                    }
+                url:  "{{url('/meter_reading_approvegenerate')}}",
+                type: 'POST',
+                data: { 
+                        _token: '{{ csrf_token() }}',
+                    company: company,
+                    department: department,
+                    employee: employee, 
+                    from_date: from_date,
+                    to_date: to_date
                 },
-                cache: true
-            }
-       });
-
-        function load_dt(employee, from_date, to_date) {
-            $('#dataTable').DataTable({
-                lengthMenu: [[10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"]],
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url:  "{{url('/meter_reading_approvegenerate')}}",
-                    type: 'POST',
-                    data: { 
-                         _token: '{{ csrf_token() }}',
-                        employee: employee, 
-                        from_date: from_date,
-                        to_date: to_date
-                    },
-                },
-                columns: [
-                     {
-                        data: null,
-                        name: 'checkbox',
-                        orderable: false,
-                        searchable: false,
-                        render: function(data, type, row) {
-                            return '<input type="checkbox"  class="row-checkbox selectCheck removeIt" data-id="' + row.emp_auto_id + '">';
-                        }
-                    },
-                    { data: 'emp_id', name: 'emp_id' },
-                    { data: 'emp_name_with_initial', name: 'emp_name_with_initial' },
-                    { data: 'count', name: 'count' },
-                    { data: 'overall_total', name: 'overall_total' },
+            },
+            columns: [
                     {
-                        data: 'emp_auto_id',
-                        name: 'emp_auto_id',
-                        visible: false
+                    data: null,
+                    name: 'checkbox',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row) {
+                        return '<input type="checkbox"  class="row-checkbox selectCheck removeIt" data-id="' + row.emp_auto_id + '">';
                     }
-                    
-                ],
-                "bDestroy": true,
-                "order": [
-                    [1, "desc"] // Order by date column
-                ]
-            });
+                },
+                { data: 'emp_id', name: 'emp_id' },
+                { data: 'emp_name_with_initial', name: 'emp_name_with_initial' },
+                { data: 'count', name: 'count' },
+                { data: 'overall_total', name: 'overall_total' },
+                {
+                    data: 'emp_auto_id',
+                    name: 'emp_auto_id',
+                    visible: false
+                }
+                
+            ],
+            "bDestroy": true,
+            "order": [
+                [1, "desc"] // Order by date column
+            ]
+        });
+    }
+
+    $('#formFilter').on('submit',function(e) {
+        e.preventDefault();
+        let company = $('#company_f').val();
+        let department = $('#department_f').val();
+        let employee = $('#employee_f').val();
+        let from_date = $('#from_date').val();
+        let to_date = $('#to_date').val();
+
+        if (!from_date || !to_date) {
+            alert('Please select both From and To dates');
+            return;
+        }
+        
+        if (from_date > to_date) {
+            alert('From date cannot be greater than To date');
+            return;
         }
 
-        $('#formFilter').on('submit',function(e) {
-            e.preventDefault();
-            let employee = $('#employee_f').val();
-            let from_date = $('#from_date').val();
-            let to_date = $('#to_date').val();
+        load_dt(company, department, employee, from_date, to_date);
+    });
 
-            load_dt(employee, from_date, to_date);
-        });
+    $('#btn-clear').click(function() {
+        $('#formFilter')[0].reset();
+        company_f.val(null).trigger('change');
+        department_f.val(null).trigger('change');
+        employee_f.val(null).trigger('change');
+        
+        if ($.fn.DataTable.isDataTable('#dataTable')) {
+            $('#dataTable').DataTable().destroy();
+        }
+        $('#dataTable tbody').empty();
+    });
 
 
-         var selectedRowIdsapprove = [];
+    var selectedRowIdsapprove = [];
 
     $('#approve_att').click(function () {
         selectedRowIdsapprove = [];

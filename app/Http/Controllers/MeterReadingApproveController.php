@@ -30,49 +30,58 @@ class MeterReadingApproveController extends Controller
             return response()->json(['error' => 'UnAuthorized'], 401);
         }
 
+        $company = $request->get('company');
+        $department = $request->get('department');
         $employee = $request->get('employee');
         $from_date = $request->get('from_date');
         $to_date = $request->get('to_date');
 
-
-          $query = DB::query()
+        $query = DB::query()
             ->select('employees.id as emp_auto_id',
                 'employees.emp_id',
                 'employees.emp_name_with_initial',
                 'employees.emp_join_date'               
             )
             ->from('employees as employees');
+        
         if ($employee != '') {
             $query->where(['employees.emp_id' => $employee]);
         }
+        if ($company != '') {
+            $query->where(['employees.emp_company' => $company]);
+        }
+        if ($department != '') {
+            $query->where(['employees.emp_department' => $department]);
+        }
+        
         $query->where('employees.deleted', 0);
         $query->where('employees.is_resigned',0);
         $query->groupBy('employees.emp_id');
         $results = $query->get();
 
-          foreach ($results as $record) {
+        $data = [];
 
+        foreach ($results as $record) {
             $readingQuery = DB::table('meter_reading_count')
-            ->where('emp_id', $record->emp_id)
-            ->whereBetween('date', [$from_date, $to_date]);
+                ->where('emp_id', $record->emp_id)
+                ->whereBetween('date', [$from_date, $to_date]);
         
             $readingTotal = $readingQuery->sum('count');
 
-
             if ($readingTotal == 0 ) {
-                    continue;
-                }
+                continue;
+            }
 
             $data[] = [
-                        'emp_auto_id' => $record->emp_auto_id,
-                        'emp_id' => $record->emp_id,
-                        'emp_name_with_initial' => $record->emp_name_with_initial,
-                        'count' => $readingTotal, 
-                        'overall_total' => $readingTotal * 25
-                    ];
-          }
+                'emp_auto_id' => $record->emp_auto_id,
+                'emp_id' => $record->emp_id,
+                'emp_name_with_initial' => $record->emp_name_with_initial,
+                'count' => $readingTotal, 
+                'overall_total' => $readingTotal * 25
+            ];
+        }
 
-         return response()->json(['data' => $data ?? []]);
+        return response()->json(['data' => $data]);
     }
 
 
