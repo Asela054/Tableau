@@ -114,7 +114,7 @@ class MeterReadingApproveController extends Controller
 
         if ($profiles) {
 
-            $remunerationid = 30;
+            $remunerationid = 34;
 
             $paysliplast = DB::table('employee_payslips')
                 ->select('emp_payslip_no')
