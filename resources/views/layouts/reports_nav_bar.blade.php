@@ -35,6 +35,9 @@
             @if($user->can('employee-absent-report'))
             <li><a class="dropdown-item" id="absent_report_link" href="{{ route('employee_absent_report') }}">Employee Absent Report</a></li>
             @endif
+             @if($user->can('attendance-report'))
+            <li><a class="dropdown-item" href="{{ route('timestampreport')}}">All Timestamp Report</a></li>
+            @endif
         </ul>
   </div>
   @endif
