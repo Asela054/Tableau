@@ -53,8 +53,8 @@
                 <div class="card-body p-0 p-2">
                       <div class="d-flex justify-content-between align-items-center">
                         <div></div>
-                        <button class="btn btn-danger btn-sm" id="btn-print">
-                            <i class="fas fa-print mr-1"></i> Print Report
+                        <button class="btn btn-danger btn-sm" id="btn-pdf">
+                            <i class="fas fa-file-pdf mr-1"></i> Export PDF
                         </button>
                     </div>
                      <div class="daily_table table-responsive center-block fix-width scroll-inner" id="tableContainer">
@@ -67,8 +67,12 @@
 @endsection
 
 @section('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
     <script>
+        const { jsPDF } = window.jspdf;
+
         $(document).ready(function () {
 
             $('#report_menu_link').addClass('active');
@@ -163,95 +167,159 @@
             });
 
 
-        $(document).on('click', '#btn-print', function() {
-            printTableContainer();
-        });
+          $(document).on('click', '#btn-pdf', function() {
+                generatePDF();
+            });
 
         
-        function printTableContainer() {
-            const printContent = document.getElementById('tableContainer').innerHTML;
-            
-            // Create a new window for printing
-            const printWindow = window.open('', '_blank', 'width=800,height=600');
-            
-            // Build the HTML for printing
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Timestamp Report</title>
-                    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            margin: 20px;
+
+            function generatePDF() {
+                // Get filter values for PDF header
+                const companyName = $('#company').select2('data')[0]?.text || 'All Companies';
+                const departmentName = $('#department').select2('data')[0]?.text || 'All Departments';
+                const locationName = $('#location').select2('data')[0]?.text || 'All Locations';
+                const fromDate = $('#from_date').val() || 'Not specified';
+                const toDate = $('#to_date').val() || 'Not specified';
+                const currentDate = new Date().toLocaleDateString();
+                
+                // Initialize PDF in landscape mode
+                const doc = new jsPDF('l', 'mm', 'a4'); // landscape, millimeters, A4 size
+                
+                // Add report title
+                doc.setFontSize(18);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Employee Timestamp Report', doc.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
+                
+                // Add filter information
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                
+                let yPos = 30;
+                doc.text(`Date Range: ${fromDate} to ${toDate}`, 15, yPos);
+                doc.text(`Company: ${companyName}`, 100, yPos);
+                doc.text(`Department: ${departmentName}`, 180, yPos);
+                
+                yPos += 5;
+                doc.text(`Location: ${locationName}`, 15, yPos);
+                doc.text(`Generated on: ${currentDate}`, 180, yPos);
+                
+                // Add a line separator
+                yPos += 7;
+                doc.setLineWidth(0.3);
+                doc.line(15, yPos, doc.internal.pageSize.getWidth() - 15, yPos);
+                yPos += 5;
+                
+                // Get all tables from the container
+                const tableContainer = document.getElementById('tableContainer');
+                const tables = tableContainer.getElementsByTagName('table');
+                
+                if (tables.length > 0) {
+                    let isFirstTable = true;
+                    
+                    // Process each table
+                    for (let i = 0; i < tables.length; i++) {
+                        const table = tables[i];
+                        
+                        // Check if we need a new page (leave space for header)
+                        if (yPos > 180 && !isFirstTable) {
+                            doc.addPage('l', 'a4');
+                            yPos = 20;
                         }
-                        @media print {
-                            .page-break {
-                                page-break-after: always !important;
-                            }
-                            .date-section {
-                                page-break-inside: avoid;
-                            }
-                            table {
-                                font-size: 10px;
-                                width: 100%;
-                            }
-                            th, td {
-                                padding: 4px;
-                                border: 1px solid #ddd;
-                            }
-                            .no-print {
-                                display: none !important;
-                            }
-                            h5 {
-                                background-color: #f8f9fa;
-                                padding: 8px;
-                                margin-bottom: 10px;
-                            }
-                        }
-                        .date-section {
-                            margin-bottom: 30px;
-                        }
-                        h5 {
-                            background-color: #f8f9fa;
-                            padding: 10px;
-                            border-radius: 4px;
-                            margin-bottom: 15px;
-                        }
-                        table {
-                            font-size: 11px;
-                        }
-                        th {
-                            background-color: #f8f9fa;
-                            font-weight: bold;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <h2 class="text-center mb-4">Employee Timestamp Report</h2>
-                    <div class="filter-info mb-3">
-                        <p><strong>Date Range:</strong> ${$('#from_date').val()} to ${$('#to_date').val()}</p>
-                        <p><strong>Company:</strong> ${$('#company').select2('data')[0]?.text || 'All'}</p>
-                        <p><strong>Department:</strong> ${$('#department').select2('data')[0]?.text || 'All'}</p>
-                        <p><strong>Location:</strong> ${$('#location').select2('data')[0]?.text || 'All'}</p>
-                    </div>
-                    <hr>
-                    ${printContent}
-                    <script>
-                        window.onload = function() {
-                            window.print();
-                            setTimeout(function() {
-                                window.close();
-                            }, 100);
-                        }
-                    <\/script>
-                </body>
-                </html>
-            `);
-            
-            printWindow.document.close();
-        }
+                        
+                        // Extract table data
+                        const headers = [];
+                        const data = [];
+                        
+                        // Get table headers and center align them
+                        const headerRows = table.querySelectorAll('thead tr');
+                        headerRows.forEach(headerRow => {
+                            const headerCells = headerRow.querySelectorAll('th');
+                            const headerRowData = [];
+                            headerCells.forEach(cell => {
+                                headerRowData.push({
+                                    content: cell.textContent.trim(),
+                                    styles: { halign: 'center' }
+                                });
+                            });
+                            headers.push(headerRowData);
+                        });
+                        
+                        // Get table body data
+                        const bodyRows = table.querySelectorAll('tbody tr');
+                        bodyRows.forEach(row => {
+                            const rowCells = row.querySelectorAll('td');
+                            const rowData = [];
+                            rowCells.forEach(cell => {
+                                rowData.push(cell.textContent.trim());
+                            });
+                            data.push(rowData);
+                        });
+                        
+                        // Calculate table width (full width minus margins)
+                        const pageWidth = doc.internal.pageSize.getWidth();
+                        const margin = 15;
+                        const tableWidth = pageWidth - (2 * margin);
+                        
+                        // Generate table using autoTable with 100% width and centered headers
+                        doc.autoTable({
+                            startY: yPos,
+                            head: headers,
+                            body: data,
+                            theme: 'grid',
+                            styles: {
+                                fontSize: 8,
+                                cellPadding: 2,
+                                overflow: 'linebreak',
+                                textAlign: 'left'
+                            },
+                            headStyles: {
+                                fillColor: [41, 128, 185],
+                                textColor: 255,
+                                fontStyle: 'bold',
+                                halign: 'center' // Center align header text
+                            },
+                            columnStyles: {
+                                // Center align first column if it contains serial numbers
+                                0: { halign: 'center' }
+                            },
+                            bodyStyles: {
+                                textAlign: 'left'
+                            },
+                            alternateRowStyles: {
+                                fillColor: [245, 245, 245]
+                            },
+                            margin: { left: margin, right: margin },
+                            pageBreak: 'auto',
+                            tableWidth: tableWidth, // Set table width to calculated width
+                            tableLineWidth: 0.1,
+                            tableLineColor: [200, 200, 200]
+                        });
+                        
+                        // Update Y position for next table
+                        yPos = doc.lastAutoTable.finalY + 10;
+                        isFirstTable = false;
+                    }
+                } else {
+                    // If no tables, display a message
+                    doc.setFontSize(12);
+                    doc.text('No data available for the selected filters', 15, yPos);
+                }
+                
+                // Add page numbers to all pages
+                const totalPages = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= totalPages; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(8);
+                    doc.text(
+                        `Page ${i} of ${totalPages}`,
+                        doc.internal.pageSize.getWidth() - 30,
+                        doc.internal.pageSize.getHeight() - 10
+                    );
+                }
+                
+                // Save the PDF
+                doc.save(`Timestamp_Report_${fromDate.replace(/-/g, '_')}_${toDate.replace(/-/g, '_')}.pdf`);
+            }
 
 
         });
