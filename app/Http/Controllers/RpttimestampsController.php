@@ -112,7 +112,7 @@ class RpttimestampsController extends Controller
             $htmlTables .= '<th>Employee Name</th>';
             $htmlTables .= '<th>Location</th>';
             $htmlTables .= '<th>Department</th>';
-            
+            $htmlTables .= '<th>Date</th>';
             // Timestamp columns
             for ($i = 1; $i <= $maxCount; $i++) {
                 $htmlTables .= '<th>Time ' . $i . '</th>';
@@ -130,6 +130,7 @@ class RpttimestampsController extends Controller
                 $htmlTables .= '<td>' . htmlspecialchars($record->emp_name_with_initial) . '</td>';
                 $htmlTables .= '<td>' . htmlspecialchars($record->employee_location) . '</td>';
                 $htmlTables .= '<td>' . htmlspecialchars($record->employee_department) . '</td>';
+                $htmlTables .= '<td>' . htmlspecialchars($date) . '</td>';
                 
                 // Parse timestamps data
                 $timestamps = [];
