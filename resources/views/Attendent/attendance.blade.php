@@ -181,7 +181,7 @@
                         <div class="col1 text-center">
                             <h4 class="font-weight-normal">If you need to download data, please confirm?</h4>
                         </div>
-                        @if($companytype == 0)
+                        @if($companytype == 1)
                         <div class="col1 mb-3">
                             <label class="small font-weight-bold text-dark">From Date*</label>
                             <input required type="date" id="date_from" name="date_from"
