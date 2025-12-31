@@ -16,6 +16,8 @@ use Excel;
 use Carbon\Carbon;
 use DateInterval;
 use DateTime;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Session;
 
 class AttendanceController extends Controller
 {
@@ -41,7 +43,26 @@ class AttendanceController extends Controller
             ->leftjoin('branches', 'fingerprint_devices.location', '=', 'branches.id')
             ->select('fingerprint_devices.*', 'branches.location')
             ->get();
-        return view('Attendent.attendance', compact('device'));
+
+            $companytype =0;
+
+         try {
+        // Check if the column exists in the companies table
+        $columnExists = Schema::hasColumn('companies', 'company_type');
+        
+                if ($columnExists) {
+                    $company = DB::table('companies')
+                    ->where('id', Session::get('company_id'))
+                    ->first();
+                    if ($company && isset($company->company_type)) {
+                        $companytype = $company->company_type;
+                    }
+                }
+            } catch (\Exception $e) {
+                \Log::error('Error checking company_type: ' . $e->getMessage());
+                $companytype = 0;
+            }
+        return view('Attendent.attendance', compact('device','companytype'));
     }
 
     /**
