@@ -413,10 +413,25 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-row mb-1">
-                                        <div class="col">
-                                            <label class="small font-weight-bold text-dark">Date</label>
-                                            <input required type="date" id="date_u" name="date" class="form-control form-control-sm" value="{{Date('Y-m-d')}}" />
-                                        </div>
+
+                                          @if($companytype == 1)
+                                            <div class="col">
+                                                <label class="small font-weight-bold text-dark">From Date*</label>
+                                                <input required type="date" id="date_from" name="date_from"
+                                                    class="form-control form-control-sm" value="{{Date('Y-m-d')}}"/>
+                                            </div>
+                                            <div class="col">
+                                                <label class="small font-weight-bold text-dark">To Date*</label>
+                                                <input required type="date" id="date_to" name="date_to"
+                                                    class="form-control form-control-sm" value="{{Date('Y-m-d')}}" />
+                                            </div>
+                                            @else
+                                                <div class="col">
+                                                    <label class="small font-weight-bold text-dark">Date*</label>
+                                                    <input required type="date" id="date_u" name="date" class="form-control form-control-sm" value="{{Date('Y-m-d')}}" />
+                                                </div>
+                                            @endif
+
                                         <div class="col">
                                             <label class="small font-weight-bold text-dark">Select Machine</label>
                                             <select id="machine" name="machine" class="form-control form-control-sm" required>
@@ -445,6 +460,7 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group mt-3">
+                                        <input type="hidden" name="companytype" id="companytype" value="<?php echo $companytype; ?>" />
                                         <button type="submit" name="action_button" id="btn-upload" class="btn btn-outline-primary btn-sm fa-pull-right px-4"><i class="fas fa-upload"></i>&nbsp;Upload </button>
                                     </div>
                                 </div>
