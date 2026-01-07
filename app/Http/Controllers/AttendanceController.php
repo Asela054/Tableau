@@ -50,22 +50,20 @@ class AttendanceController extends Controller
 
             $companytype =0;
 
-         try {
         // Check if the column exists in the companies table
         $columnExists = Schema::hasColumn('companies', 'company_type');
-        
-                if ($columnExists) {
-                    $company = DB::table('companies')
-                    ->where('id', Session::get('company_id'))
-                    ->first();
-                    if ($company && isset($company->company_type)) {
-                        $companytype = $company->company_type;
-                    }
-                }
-            } catch (\Exception $e) {
-                \Log::error('Error checking company_type: ' . $e->getMessage());
-                $companytype = 0;
+
+            if ($columnExists) {
+                $company = DB::table('users')
+                        ->join('employees', 'users.emp_id', '=', 'employees.emp_id')
+                        ->leftjoin('companies', 'employees.emp_company', '=', 'companies.id')
+                        ->where('users.id', $user->id)
+                        ->select('companies.company_type as company_type')
+                        ->first();
+                    $companytype = $company->company_type;
             }
+
+            
         return view('Attendent.attendance', compact('device','companytype'));
     }
 
@@ -177,21 +175,17 @@ class AttendanceController extends Controller
 
          $companytype =0;
 
-         try {
-        // Check if the column exists in the companies table
+       // Check if the column exists in the companies table
         $columnExists = Schema::hasColumn('companies', 'company_type');
-        
-                if ($columnExists) {
-                    $company = DB::table('companies')
-                    ->where('id', Session::get('company_id'))
-                    ->first();
-                    if ($company && isset($company->company_type)) {
-                        $companytype = $company->company_type;
-                    }
-                }
-            } catch (\Exception $e) {
-                \Log::error('Error checking company_type: ' . $e->getMessage());
-                $companytype = 0;
+
+            if ($columnExists) {
+                $company = DB::table('users')
+                        ->join('employees', 'users.emp_id', '=', 'employees.emp_id')
+                        ->leftjoin('companies', 'employees.emp_company', '=', 'companies.id')
+                        ->where('users.id', $user->id)
+                        ->select('companies.company_type as company_type')
+                        ->first();
+                    $companytype = $company->company_type;
             }
 
 
