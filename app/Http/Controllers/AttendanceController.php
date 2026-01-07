@@ -52,7 +52,7 @@ class AttendanceController extends Controller
         
                 if ($columnExists) {
                     $company = DB::table('companies')
-                    ->where('id', Session::get('company_id'))
+                    ->where('id', Session::get('emp_company'))
                     ->first();
                     if ($company && isset($company->company_type)) {
                         $companytype = $company->company_type;
