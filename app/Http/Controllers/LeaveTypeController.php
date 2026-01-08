@@ -233,25 +233,28 @@ class LeaveTypeController extends Controller
             $currentYear = date('Y');
             $currentYearEnd = Carbon::create($currentYear, 12, 31);
             
-            // Check if employee's service is less than 1 year
-            if ($joinDate->diffInYears($today) < 1) {
-                // For employees with less than 1 year service
-                $formated_from_date = $joinDate->format('Y-m-d'); 
-                $formated_fromto_date = $today->format('Y-m-d'); 
-            } 
-            elseif ($joinDate->diffInYears($today) < 2){
+            // // Check if employee's service is less than 1 year
+            // if ($joinDate->diffInYears($today) < 1) {
+            //     // For employees with less than 1 year service
+            //     $formated_from_date = $joinDate->format('Y-m-d'); 
+            //     $formated_fromto_date = $today->format('Y-m-d'); 
+            // } 
+            // elseif ($joinDate->diffInYears($today) < 2){
 
-                $oneYearAfterJoin = $joinDate->copy()->addYear();
-                $formated_from_date = $oneYearAfterJoin->format('Y-m-d');
-                
-                // To date: end of the current year
-                $formated_fromto_date = $currentYearEnd->format('Y-m-d');
-            }
-            else {
-                // For employees with 1 year or more service
-                $formated_from_date = date('Y') . '-01-01';
-                $formated_fromto_date = date('Y') . '-12-31';
-            }
+            //     $oneYearAfterJoin = $joinDate->copy()->addYear();
+            //     $formated_from_date = $oneYearAfterJoin->format('Y-m-d');
+
+            //     // To date: end of the current year
+            //     $formated_fromto_date = $currentYearEnd->format('Y-m-d');
+            // }
+            // else {
+            //     // For employees with 1 year or more service
+            //     $formated_from_date = date('Y') . '-01-01';
+            //     $formated_fromto_date = date('Y') . '-12-31';
+            // }
+
+            $formated_from_date = date('Y') . '-01-01';
+            $formated_fromto_date = date('Y') . '-12-31';
 
 
 
