@@ -43,7 +43,7 @@ class LeavepolicyService
                 // First Year (0-12 months) - No annual leaves
                 if ($currentdate <=  $join_year_end_date) {
                     $annual_leaves = 0;
-                    $leave_msg = "Employee is in the first year of service - no annual leaves yet.";
+                    $leave_msg = "Employee is in the first year of service - no annual leaves yet. Joining date: {$empJoinDate}";
                 }
                 // Second Year (12-24 months) - Pro-rated leaves based on first year's quarter
                 elseif ($next_year_first_date <= $currentdate && $currentdate <= $next_year_end_date) {
@@ -64,7 +64,7 @@ class LeavepolicyService
                             ->first();
 
                         $annual_leaves = $q_data ? $q_data->leaves : 0;
-                        $leave_msg = $q_data ? "Using quarter leaves value from anniversary to year-end." : "No matching quarter found for pro-rated leaves.";
+                        $leave_msg = $q_data ? "Using quarter leaves value from anniversary to year-end. Joining date: {$empJoinDate}" : "No matching quarter found for pro-rated leaves. Joining date: {$empJoinDate}";
                    // }
                     // // After December 31, switch to standard 14 days
                     // elseif ($current_date > $year_end) {
@@ -80,12 +80,12 @@ class LeavepolicyService
                 // Third year onwards (24+ months) - Full 14 days
                 else {
                     $annual_leaves = 14;
-                    $leave_msg = "Employee is eligible for full 14 annual leaves per year.";
+                    $leave_msg = "Employee is eligible for full 14 annual leaves per year. Joining date: {$empJoinDate}";
                 }
                 
         }else{
             $annual_leaves = 0;
-            $leave_msg = "Employee is Not eligible for annual leaves.";
+            $leave_msg = "Employee is Not eligible for annual leaves. Joining date: {$empJoinDate}";
         }
        
 
