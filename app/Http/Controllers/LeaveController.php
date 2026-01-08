@@ -288,11 +288,38 @@ class LeaveController extends Controller
             $join_date = Carbon::parse($emp_join_date)->day;
             $full_date = '2022-'.$join_month.'-'.$join_date;
             $empid = $employee->emp_id;
-
             $job_categoryid = $employee->job_category_id;
 
-            $formated_from_date = date('Y').'-01-01';
-            $formated_fromto_date = date('Y').'-12-31';
+             // Calculate years of service
+            $joinDate = Carbon::parse($emp_join_date);
+            $today = Carbon::now();
+            $currentYear = date('Y');
+            $currentYearEnd = Carbon::create($currentYear, 12, 31);
+            
+            // Check if employee's service is less than 1 year
+            // if ($joinDate->diffInYears($today) < 1) {
+            //     // For employees with less than 1 year service
+            //     $formated_from_date = $joinDate->format('Y-m-d'); 
+            //     $formated_fromto_date = $today->format('Y-m-d'); 
+            // } 
+            // elseif ($joinDate->diffInYears($today) < 2){
+
+            //     $oneYearAfterJoin = $joinDate->copy()->addYear();
+            //     $formated_from_date = $oneYearAfterJoin->format('Y-m-d');
+                
+            //     // To date: end of the current year
+            //     $formated_fromto_date = $currentYearEnd->format('Y-m-d');
+            // }
+            // else {
+            //     // For employees with 1 year or more service
+            //     $formated_from_date = date('Y') . '-01-01';
+            //     $formated_fromto_date = date('Y') . '-12-31';
+            // }
+
+
+             $formated_from_date = date('Y') . '-01-01';
+             $formated_fromto_date = date('Y') . '-12-31';
+
 
             $current_year_taken_a_l = (new \App\Leave)->taken_annual_leaves($empid, $formated_from_date, $formated_fromto_date);
 
