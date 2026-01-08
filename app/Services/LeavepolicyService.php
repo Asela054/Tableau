@@ -26,10 +26,15 @@ class LeavepolicyService
                 $join_month = Carbon::parse($empJoinDate)->month;
                 $join_date = Carbon::parse($empJoinDate)->day;
 
+
+
                 // Get dates in YYYY-MM-DD format
                 $currentdate = $current_date->toDateString(); // YYYY-MM-DD
-                $current_year_first_date = $current_date->copy()->startOfYear()->toDateString(); // YYYY-01-01
-                $current_year_end_date = $current_date->copy()->endOfYear()->toDateString(); // YYYY-12-31
+
+                // Next year from JOIN DATE (join date + 1 year)
+                $next_year_from_join = $employee_join_date->copy()->addYear();
+                $next_year_first_date = $next_year_from_join->copy()->startOfYear()->toDateString(); // YYYY-01-01
+                $next_year_end_date = $next_year_from_join->copy()->endOfYear()->toDateString(); // YYYY-12-31
                 $join_year_end_date = $employee_join_date->copy()->endOfYear()->toDateString(); // Join year's YYYY-12-31
 
            
@@ -41,7 +46,7 @@ class LeavepolicyService
                     $leave_msg = "Employee is in the first year of service - no annual leaves yet.";
                 }
                 // Second Year (12-24 months) - Pro-rated leaves based on first year's quarter
-                elseif ($current_year_first_date <= $currentdate && $currentdate <= $current_year_end_date) {
+                elseif ($next_year_first_date <= $currentdate && $currentdate <= $next_year_end_date) {
                     // Get the 1-year anniversary date
                     $anniversary_date = $employee_join_date->copy()->addYear();
 
@@ -49,7 +54,7 @@ class LeavepolicyService
                     $year_end = Carbon::create($anniversary_date->year, 12, 31);
 
                     // Only calculate if current date is after anniversary but before next year
-                    if ($current_date >= $anniversary_date && $current_date <= $year_end) {
+                    // if ($current_date >= $anniversary_date && $current_date <= $year_end) {
                         // Get the quarter period from the joining year (original employment quarter)
                         $full_date = '2022-'.$join_month.'-'.$join_date;
 
@@ -60,17 +65,17 @@ class LeavepolicyService
 
                         $annual_leaves = $q_data ? $q_data->leaves : 0;
                         $leave_msg = $q_data ? "Using quarter leaves value from anniversary to year-end." : "No matching quarter found for pro-rated leaves.";
-                    }
+                   // }
                     // // After December 31, switch to standard 14 days
                     // elseif ($current_date > $year_end) {
                     //     $annual_leaves = 14;
                     //     $leave_msg = "Switched to standard 14 days from January 1st.";
                     // }
                     // Before anniversary date
-                    else {
-                        $annual_leaves = 14;
-                        $leave_msg = "Waiting for 1-year anniversary date ({$anniversary_date->format('Y-m-d')})";
-                    }
+                    // else {
+                    //     $annual_leaves = 14;
+                    //     $leave_msg = "Waiting for 1-year anniversary date ({$anniversary_date->format('Y-m-d')})";
+                    // }
                 }
                 // Third year onwards (24+ months) - Full 14 days
                 else {
