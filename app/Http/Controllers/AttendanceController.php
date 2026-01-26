@@ -6,6 +6,7 @@ use App\Attendance;
 use App\AttendanceEdited;
 use App\Helpers\EmployeeHelper;
 use App\Leave;
+use App\Services\AttendancePolicyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,8 @@ use Excel;
 use Carbon\Carbon;
 use DateInterval;
 use DateTime;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Session;
 
 class AttendanceController extends Controller
 {
@@ -25,9 +28,12 @@ class AttendanceController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function __construct()
+    protected $attendancePolicyService;
+
+    public function __construct(AttendancePolicyService $attendancePolicyService)
     {
         $this->middleware('auth');
+        $this->attendancePolicyService = $attendancePolicyService;
     }
 
      public function index()
@@ -41,7 +47,24 @@ class AttendanceController extends Controller
             ->leftjoin('branches', 'fingerprint_devices.location', '=', 'branches.id')
             ->select('fingerprint_devices.*', 'branches.location')
             ->get();
-        return view('Attendent.attendance', compact('device'));
+
+            $companytype =0;
+
+        // Check if the column exists in the companies table
+        $columnExists = Schema::hasColumn('companies', 'company_type');
+
+            if ($columnExists) {
+                $company = DB::table('users')
+                        ->join('employees', 'users.emp_id', '=', 'employees.emp_id')
+                        ->leftjoin('companies', 'employees.emp_company', '=', 'companies.id')
+                        ->where('users.id', $user->id)
+                        ->select('companies.company_type as company_type')
+                        ->first();
+                    $companytype = $company->company_type;
+            }
+
+            
+        return view('Attendent.attendance', compact('device','companytype'));
     }
 
     /**
@@ -150,7 +173,23 @@ class AttendanceController extends Controller
         ->where('status',1)
         ->get();
 
-        return view('Attendent.attendanceedit',compact('fingerprints'));
+         $companytype =0;
+
+       // Check if the column exists in the companies table
+        $columnExists = Schema::hasColumn('companies', 'company_type');
+
+            if ($columnExists) {
+                $company = DB::table('users')
+                        ->join('employees', 'users.emp_id', '=', 'employees.emp_id')
+                        ->leftjoin('companies', 'employees.emp_company', '=', 'companies.id')
+                        ->where('users.id', $user->id)
+                        ->select('companies.company_type as company_type')
+                        ->first();
+                    $companytype = $company->company_type;
+            }
+
+
+        return view('Attendent.attendanceedit',compact('fingerprints','companytype'));
     }
 
     /**
@@ -1344,6 +1383,9 @@ class AttendanceController extends Controller
         $date_input = $request->date;
         $machine = $request->machine;
         $txt_file_u = $request->txt_file_u;
+        $date_from = $request->date_from;
+        $date_to = $request->date_to;
+        $companytype = $request->companytype;
 
         $content = fopen($txt_file_u,'r');
 
@@ -1361,88 +1403,37 @@ class AttendanceController extends Controller
 
         foreach ($unique_arr as $line){
 
-            if($machine==1){
-                    // Split the line into parts using whitespace or tabs
-                    $parts = preg_split('/\s+/', trim($line));
+            // Split the line into parts using whitespace or tabs
+            $parts = preg_split('/\s+/', trim($line));
 
-                    if (count($parts) < 2) {
-                        continue; // Skip lines that don't have enough parts
-                    }
-
-                    $emp_id = trim($parts[0]);
-                    $date = trim($parts[1]);
-                    $time = trim($parts[2]);
-
-                    list($time_h, $time_m, $time_s) = explode(':', $time);
-
-                    $formatted_date_in = Carbon::parse($date_input)->format('dmY');
-
-                    $full_emp_id = $emp_id;
+            if (count($parts) < 2) {
+                continue; // Skip lines that don't have enough parts
             }
+
+            $emp_id = trim($parts[0]);
+            $date = trim($parts[1]);
+            $time = trim($parts[2]);
+
+            list($time_h, $time_m, $time_s) = explode(':', $time);
+            $formatted_date_in = Carbon::parse($date_input)->format('dmY');
+            $full_emp_id = $emp_id;
+            $timestamp = $time_h . ':' . $time_m . ':' . $time_s;
            
+            if($companytype == 0){
+                         $this->attendancePolicyService->attendanceInsertcsv_txt( $full_emp_id,  $date_input, $timestamp, $date );
+            }else{
 
-            $emp = DB::table('employees')
-            ->select('emp_id', 'emp_shift')
-            ->where('emp_id', $full_emp_id)
-            ->first();
-
-            if (is_null($emp)) {
-                continue;
-            }
-
-            $shift = DB::table('shift_types')
-                ->where('id', $emp->emp_shift)
-                ->first();
-
-            $previousDate = Carbon::parse($date)->subDay()->format('Y-m-d');
-            $employeeshiftdetails = DB::table('employeeshiftdetails')
-                ->where('date_from', $previousDate)
-                ->where('emp_id', $full_emp_id)
-                ->first();
-
-                $period = (new DateTime($time))->format('A');
-                $timestamp = null;
-                $attendance_date = null;
-
-
-                if ($shift && $shift->off_next_day == '1' && $date == $date_input) {
-                    $previous_day = (new DateTime($date_input))->modify('-1 day')->format('Y-m-d');
-
-                    $hasRecord = DB::table('attendances')
-                        ->whereDate('date', $previous_day)
-                        ->where('emp_id', $full_emp_id)
-                        ->whereNull('deleted_at')
-                        ->exists();
-
-                    if($hasRecord){
-                        $timestamp = $date_input . ' ' . $time_h . ':' . $time_m . ':00';
-                        $attendance_date = ($period === 'AM') ? $previous_day : substr($timestamp, 0, 10);
+                // Create date objects for from and to dates
+                $start_date = \Carbon\Carbon::parse($date_from);
+                $end_date = \Carbon\Carbon::parse($date_to);
+        
+                // Loop through each date between date_from and date_to
+                for ($current_date = $start_date; $current_date->lte($end_date); $current_date->addDay()) 
+                    {
+                        $current_date_string = $current_date->format('Y-m-d');
+                        $this->attendancePolicyService->attendanceInsertcsv_txt($full_emp_id, $current_date_string, $timestamp, $date);
                     }
-                    else{
-                        $timestamp = $date_input . ' ' . $time_h . ':' . $time_m . ':00';
-                        $attendance_date = substr($timestamp, 0, 10);
-                    }
-                } else if ($date == $date_input) {
-                    if($employeeshiftdetails){
-                        $previous_day = (new DateTime($date_input))->modify('-1 day')->format('Y-m-d');
-                        $timestamp = $date_input . ' ' . $time_h . ':' . $time_m . ':00';
-                        $attendance_date = ($period === 'AM') ? $previous_day : substr($timestamp, 0, 10);
-                    }else{
-                        $timestamp = $date_input . ' ' . $time_h . ':' . $time_m . ':00';
-                        $attendance_date = substr($timestamp, 0, 10);
-                    }  
                 }
-
-                if($date == $date_input){
-                    $Attendance = Attendance::firstOrNew(['timestamp' => $timestamp, 'emp_id' => $full_emp_id]);
-                    $Attendance->uid = $full_emp_id;
-                    $Attendance->emp_id = $full_emp_id;
-                    $Attendance->timestamp = $timestamp;
-                    $Attendance->date = $attendance_date;
-                    $Attendance->location = 1;
-                    $is_ok = $Attendance->save();
-                }           
-
         }
         
         return response()->json(['status' => true, 'msg' => 'Updated successfully.']);

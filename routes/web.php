@@ -1497,6 +1497,9 @@ Route::get('/meterreadingapprove' ,'MeterReadingApproveController@index')->name(
 Route::post('/meter_reading_approvegenerate' ,'MeterReadingApproveController@generatemeterreading')->name('meter_reading_approvegenerate');
 Route::post('/approvemeterreading' ,'MeterReadingApproveController@approvemeterreading')->name('approvemeterreading');
 
+//all timestapmp report controller
+Route::get('/timestampreport' ,'RpttimestampsController@index')->name('timestampreport');
+Route::get('/generate_timestamp_report' ,'RpttimestampsController@generate_timestamp_report')->name('generate_timestamp_report');
 
 Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');
