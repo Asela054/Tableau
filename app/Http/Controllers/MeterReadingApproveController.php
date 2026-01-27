@@ -77,7 +77,7 @@ class MeterReadingApproveController extends Controller
                 'emp_id' => $record->emp_id,
                 'emp_name_with_initial' => $record->emp_name_with_initial,
                 'count' => $readingTotal, 
-                'overall_total' => $readingTotal * 25
+                'overall_total' => $readingTotal * 20 // Assuming a fixed rate of 20 per reading
             ];
         }
 
@@ -113,7 +113,8 @@ class MeterReadingApproveController extends Controller
             ->first();
 
         if ($profiles) {
-
+            
+            // Remuneration ID for Meter Reading Allowance
             $remunerationid = 34;
 
             $paysliplast = DB::table('employee_payslips')
