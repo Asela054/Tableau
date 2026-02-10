@@ -70,6 +70,7 @@
                                     <th></th>
                                     <th>EMPLOYEE ID</th>
                                     <th>EMPLOYEE</th>
+                                    <th>DEPARTMENT</th>
                                     <th>READING COUNT</th>
                                     <th>OVERALL TOTAL</th>
                                     <th class="d-none">Employee auto id</th>
@@ -250,6 +251,7 @@ $(document).ready(function(){
                 },
                 { data: 'emp_id', name: 'emp_id' },
                 { data: 'emp_name_with_initial', name: 'emp_name_with_initial' },
+                { data: 'department_name', name: 'department_name' },
                 { data: 'count', name: 'count' },
                 { data: 'overall_total', name: 'overall_total' },
                 {
