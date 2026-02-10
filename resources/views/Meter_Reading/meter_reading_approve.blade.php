@@ -85,7 +85,7 @@
         </div>
     </div>
 
-       <div class="modal fade" id="approveconfirmModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    <div class="modal fade" id="approveconfirmModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-md">
             <div class="modal-content">
@@ -109,6 +109,40 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- approve modal -->
+    <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Approve Meter Reading</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="message_modal"></div>
+                        <form class="form-horizontal" id="formApprove">
+                            <div class="form-group mb-1">
+                                <div class="col-12">
+                                        <label class="small font-weight-bolder text-dark">Addition Type</label>
+                                        <select name="remunitiontype" id="remunitiontype" class="form-control form-control-sm">
+                                            <option value="">Select Remuneration</option>
+                                                @foreach ($remunerations as $remuneration){
+                                                    <option value="{{$remuneration->id}}" >{{$remuneration->remuneration_name}}</option>
+                                                }  
+                                                @endforeach
+                                        </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm px-3" id="btn-approve"><i class="fa-light fa-light fa-clipboard-check"></i>&nbsp;Approve</button>
+                    </div>
+                </div>
+            </div>
     </div>
 
 </main>
@@ -207,7 +241,11 @@ $(document).ready(function(){
                     orderable: false,
                     searchable: false,
                     render: function(data, type, row) {
-                        return '<input type="checkbox"  class="row-checkbox selectCheck removeIt" data-id="' + row.emp_auto_id + '">';
+                        if (row.is_approved == 1) {
+                            return '<input type="checkbox" class="row-checkbox selectCheck removeIt" data-id="' + row.emp_auto_id + '" checked disabled>';
+                        } else {
+                            return '<input type="checkbox" class="row-checkbox selectCheck removeIt" data-id="' + row.emp_auto_id + '">';
+                        }
                     }
                 },
                 { data: 'emp_id', name: 'emp_id' },
@@ -279,55 +317,106 @@ $(document).ready(function(){
                 });
             }
         });
-
+        
         if (selectedRowIdsapprove.length > 0) {
-        console.log(selectedRowIdsapprove);
             $('#approveconfirmModal').modal('show');
         } else {
-            
-            alert('Select Rows to Final Approve!!!!');
+            alert('Please select at least one record to approve!');
         }
     });
 
-    $('#approve_button').click(function () {
-            $('#approve_button').html('<i class="fa fa-spinner fa-spin mr-2"></i> Processing').prop('disabled', true);
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            })
-
-            var employee_f = $('#employee_f').val();
-            var from_date = $('#from_date').val();
-            var to_date = $('#to_date').val();
-
-            $.ajax({
-                url: '{!! route("approvemeterreading") !!}',
-                type: 'POST',
-                dataType: "json",
-                data: {
-                    dataarry: selectedRowIdsapprove,
-                    employee_f: employee_f,
-                    from_date: from_date,
-                    to_date: to_date
-                },
-                success: function (data) {
-                    $('#approve_button').html('Approve').prop('disabled', false);
-                    setTimeout(function () {
-                        $('#approveconfirmModal').modal('hide');
-                        location.reload();
-                    }, 500);
-
-                    $('#selectAll').prop('checked', false);
-                   
-                }
-            })
+    $('#approve_button').off('click').on('click', function() {
+        $('#approveconfirmModal').modal('hide');
+        $('.message_modal').html('');
+        $('#approveModal').modal('show');
     });
 
+    $(document).on('click', '#btn-approve', function (e) {
+        e.preventDefault();
+        var remunitiontype = $('#remunitiontype').val();
+        var employee = $('#employee_f').val();
+        var from_date = $('#from_date').val();
+        var to_date = $('#to_date').val();
 
+        if(remunitiontype == ''){
+            $('.message_modal').html('<div class="alert alert-warning">Please select Remuneration Type!</div>');
+            return false;
+        }
 
+        console.log(selectedRowIdsapprove);
+        console.log('Remunition type:', remunitiontype);
+        
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            url: '{!! route("approvemeterreading") !!}',
+            type: 'POST',
+            dataType: "json",
+            data: {
+                dataarry: selectedRowIdsapprove,
+                remunitiontype: remunitiontype,
+                employee_f: employee,
+                from_date: from_date,
+                to_date: to_date
+            },
+            success: function (data) {
+                if (data.success) {
+                    let successHtml = `<div class='alert alert-success'>${data.success}</div>`;
+                    
+                    if (data.errors && data.errors.length > 0) {
+                        let errorHtml = '<div class="alert alert-warning mt-2"><strong>Some issues occurred:</strong><ul>';
+                        data.errors.forEach(error => {
+                            errorHtml += `<li>${error}</li>`;
+                        });
+                        errorHtml += '</ul></div>';
+                        successHtml += errorHtml;
+                    }
+                    
+                    $('.message_modal').html(successHtml);
+                    
+                    if (!data.errors || data.errors.length === 0) {
+                        $('#formApprove')[0].reset();
+                        $('#remunitiontype').val('').trigger('change');
+                        
+                        setTimeout(function() {
+                            $('#approveModal').modal('hide');
+                            location.reload();
+                        }, 2000);
+                    }
+                } else {
+                    let html = '<div class="alert alert-danger">';
+                    if (data.errors && Array.isArray(data.errors)) {
+                        html += '<strong>Errors occurred:</strong><ul>';
+                        data.errors.forEach(error => {
+                            html += `<li>${error}</li>`;
+                        });
+                        html += '</ul>';
+                    } else {
+                        html += data.message || 'Something went wrong. Please try again.';
+                    }
+                    html += '</div>';
+                    $('.message_modal').html(html);
+                }
+                
+                $('#approveModal').scrollTop(0);
+            },
+            error: function(xhr) {
+                let errorMessage = 'Something went wrong. Please try again.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                $('.message_modal').html(`<div class="alert alert-danger">${errorMessage}</div>`);
+                $('#approveModal').scrollTop(0);
+            }
+        });
+    });
+    
     $('#selectAll').click(function (e) {
-        $('#dataTable').closest('table').find('td input:checkbox').prop('checked', this.checked);
+        $('#dataTable').closest('table').find('td input:checkbox:not(:disabled)').prop('checked', this.checked);
     });
 
 });

@@ -119,7 +119,7 @@
   @if(auth()->user()->can('meter-reading-list')
   || auth()->user()->can('meter-reading-Approve-list'))
   <div class="dropdown">
-    <a  role="button" data-toggle="dropdown" class="btn navbtncolor" data-target="#" href="#" id="meterreading">
+    <a  role="button" data-toggle="dropdown" class="btn navbtncolor" href="#" id="meterreading">
       Meter Reading <span class="caret"></span></a>
         <ul class="dropdown-menu multi-level dropdownmenucolor" role="menu" aria-labelledby="dropdownMenu">
           @can('meter-reading-list')
