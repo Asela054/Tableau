@@ -67,8 +67,9 @@
                                 <thead>
                                     <tr>
                                         <th>EMP ID</th>
-                                        <th>DATE</th>
                                         <th>EMP NAME</th>
+                                        <th>DEPARTMENT</th>
+                                        <th>DATE</th>
                                         <th>COUNT</th>
                                         <th class="text-right">Action</th>
                                     </tr>
@@ -426,8 +427,9 @@ $(document).ready(function () {
             },
             columns: [
                 { data: 'emp_id', name: 'emp_id' },
-                { data: 'date', name: 'date' },
                 { data: 'emp_name_with_initial', name: 'emp_name_with_initial' },
+                { data: 'department_name', name: 'department_name' },
+                { data: 'date', name: 'date' },
                 { data: 'count', name: 'count' },
                 {
                     data: 'id',

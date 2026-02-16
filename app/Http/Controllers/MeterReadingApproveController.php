@@ -41,9 +41,15 @@ class MeterReadingApproveController extends Controller
             ->select('employees.id as emp_auto_id',
                 'employees.emp_id',
                 'employees.emp_name_with_initial',
-                'employees.emp_join_date'               
+                'employees.emp_join_date',
+                'employees.emp_department',
+                'departments.name as department_name',
+                'meter_reading.reading_limit',
+                'meter_reading.multiple_value'
             )
-            ->from('employees as employees');
+            ->from('employees as employees')
+            ->leftJoin('departments', 'employees.emp_department', '=', 'departments.id')
+            ->leftJoin('meter_reading', 'employees.emp_department', '=', 'meter_reading.department_id');
         
         if ($employee != '') {
             $query->where(['employees.emp_id' => $employee]);
@@ -57,39 +63,44 @@ class MeterReadingApproveController extends Controller
         
         $query->where('employees.deleted', 0);
         $query->where('employees.is_resigned',0);
-        $query->groupBy('employees.emp_id');
+        $query->groupBy('employees.emp_id', 'employees.id', 'employees.emp_name_with_initial', 
+                        'employees.emp_join_date', 'employees.emp_department', 'departments.name', 
+                        'meter_reading.reading_limit', 'meter_reading.multiple_value');
         $results = $query->get();
 
         $data = [];
 
         foreach ($results as $record) {
-            $readingQuery = DB::table('meter_reading_count')
-                ->where('emp_id', $record->emp_id)
-                ->whereBetween('date', [$from_date, $to_date]);
+        $readingQuery = DB::table('meter_reading_count')
+            ->where('emp_id', $record->emp_id)
+            ->whereBetween('date', [$from_date, $to_date]);
 
-            $readingTotal = $readingQuery->sum('count');
+        $readingTotal = $readingQuery->sum('count');
 
-            $approvedCount = DB::table('meter_reading_count')
-                ->where('emp_id', $record->emp_id)
-                ->whereBetween('date', [$from_date, $to_date])
-                ->where('approve_status', 1)
-                ->count();
+        $approvedCount = DB::table('meter_reading_count')
+            ->where('emp_id', $record->emp_id)
+            ->whereBetween('date', [$from_date, $to_date])
+            ->where('approve_status', 1)
+            ->count();
 
-            $totalCount = DB::table('meter_reading_count')
-                ->where('emp_id', $record->emp_id)
-                ->whereBetween('date', [$from_date, $to_date])
-                ->count();
+        $totalCount = DB::table('meter_reading_count')
+            ->where('emp_id', $record->emp_id)
+            ->whereBetween('date', [$from_date, $to_date])
+            ->count();
 
-            if ($readingTotal == 0 ) {
-                continue;
-            }
+        if ($readingTotal == 0 ) {
+            continue;
+        }
 
-            $data[] = [
-                'emp_auto_id' => $record->emp_auto_id,
+        $multiple_value = $record->multiple_value ?? 1;
+
+        $data[] = [
+            'emp_auto_id' => $record->emp_auto_id,
                 'emp_id' => $record->emp_id,
                 'emp_name_with_initial' => $record->emp_name_with_initial,
+                'department_name' => $record->department_name,
                 'count' => $readingTotal, 
-                'overall_total' => $readingTotal * 20,
+                'overall_total' => $readingTotal * $multiple_value,
                 'is_approved' => ($approvedCount == $totalCount) ? 1 : 0
             ];
 
