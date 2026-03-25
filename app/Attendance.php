@@ -40,10 +40,10 @@ class Attendance extends Model
             $offdutyTime = Carbon::parse($shift->offduty_time);
             
             // Handle overnight shifts (offduty_time on next day)
-            if ($offdutyTime->lt($ondutyTime)) {
-                // Add 24 hours to offduty time if it's on the next day
-                $offdutyTime = $offdutyTime->addDay();
-            }
+            // if ($offdutyTime->lt($ondutyTime)) {
+            //     // Add 24 hours to offduty time if it's on the next day
+            //     $offdutyTime = $offdutyTime->addDay();
+            // }
             
             // Calculate difference in hours
             $expectedHours = $ondutyTime->diffInHours($offdutyTime);
@@ -116,16 +116,15 @@ class Attendance extends Model
             $offdutyTime = Carbon::parse($shift->offduty_time);
             
             // Handle overnight shifts (offduty_time on next day)
-            if ($offdutyTime->lt($ondutyTime)) {
-                // Add 24 hours to offduty time if it's on the next day
-                $offdutyTime = $offdutyTime->addDay();
-            }
+            // if ($offdutyTime->lt($ondutyTime)) {
+            //     // Add 24 hours to offduty time if it's on the next day
+            //     $offdutyTime = $offdutyTime->addDay();
+            // }
             
             // Calculate difference in hours
             $expectedHours = $ondutyTime->diffInHours($offdutyTime);
             $halfDayHours = $expectedHours / 2;
         }
-
 
         $query = "SELECT Max(at1.timestamp) as lasttimestamp,
         Min(at1.timestamp) as firsttimestamp, date
@@ -196,6 +195,7 @@ class Attendance extends Model
 
             $work_hours_to = Carbon::parse($work_hours_to);
             $work_hours_from = Carbon::parse($work_hours_from);
+
 
             if($first_time >=$today_twelve && $first_time < $today_one ){
             }else{
