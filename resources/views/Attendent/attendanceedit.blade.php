@@ -859,25 +859,32 @@
                             t.clear();
 
                             for(let i = 1; i <= num_of_days; i++)
-                            {
-                                let day = get_day(month_n_y_arr[0], month_n_y_arr[1] ,i);
-                                //console.log( month_n_y_arr[0]+' : '+ month_n_y_arr[1]+ ' : ' + i + ' : ' +day);
-                                t.row.add([
-                                    i,
-                                    day,
-                                    '<input type="datetime-local" class="form-control form-control-sm in_date_time" placeholder="YYYY-MM-DD HH:MM" id="in_'+i+'" name="in_time[]" /> ' +
-                                    '<input type="hidden" value="'+i+'" name="date[]" />' +
-                                    '<input type="hidden" value="" id="uid_'+i+'" name="uid[]" />' +
-                                    '<input type="hidden" value="" id="emp_id_'+i+'" name="emp_id[]" />' +
-                                    '<input type="hidden" value="'+month_id+'-'+i+'" id="date_'+i+'" name="date_e[]" />' +
-                                    '<input type="hidden" value="" id="existing_time_stamp_in_'+i+'" name="existing_time_stamp_in[]" />' +
-                                    '<input type="hidden" value="" id="existing_time_stamp_out_'+i+'" name="existing_time_stamp_out[]" />'+
-                                    '<input type="hidden" value="" id="existing_time_stamp_in_rfc_'+i+'" name="existing_time_stamp_in_rfc[]" />'+
-                                    '<input type="hidden" value="" id="existing_time_stamp_out_rfc_'+i+'" name="existing_time_stamp_out_rfc[]" />',
-                                    '<input type="datetime-local" class="form-control form-control-sm out_date_time" placeholder="YYYY-MM-DD HH:MM" id="out_'+i+'" name="out_time[]" /> '
-                                ]).node().id = i;
-                                t.draw( false );
-                            }
+
+                           {
+                                    let day = get_day(month_n_y_arr[0], month_n_y_arr[1], i);
+                                    
+                                    // Format: YYYY-MM-DD (assuming month_n_y_arr[0] is year, month_n_y_arr[1] is month)
+                                    let year = month_n_y_arr[0];
+                                    let month = String(month_n_y_arr[1]).padStart(2, '0');
+                                    let date = String(i).padStart(2, '0');
+                                    let formattedDate = `${year}-${month}-${date}`;
+                                    
+                                    t.row.add([
+                                        i,
+                                        day,
+                                        '<input type="datetime-local" class="form-control form-control-sm in_date_time" placeholder="YYYY-MM-DD HH:MM" id="in_'+i+'" name="in_time[]" value="' + formattedDate + 'T00:00" /> ' +
+                                        '<input type="hidden" value="'+i+'" name="date[]" />' +
+                                        '<input type="hidden" value="" id="uid_'+i+'" name="uid[]" />' +
+                                        '<input type="hidden" value="" id="emp_id_'+i+'" name="emp_id[]" />' +
+                                        '<input type="hidden" value="'+month_id+'-'+i+'" id="date_'+i+'" name="date_e[]" />' +
+                                        '<input type="hidden" value="" id="existing_time_stamp_in_'+i+'" name="existing_time_stamp_in[]" />' +
+                                        '<input type="hidden" value="" id="existing_time_stamp_out_'+i+'" name="existing_time_stamp_out[]" />'+
+                                        '<input type="hidden" value="" id="existing_time_stamp_in_rfc_'+i+'" name="existing_time_stamp_in_rfc[]" />'+
+                                        '<input type="hidden" value="" id="existing_time_stamp_out_rfc_'+i+'" name="existing_time_stamp_out_rfc[]" />',
+                                        '<input type="datetime-local" class="form-control form-control-sm out_date_time" placeholder="YYYY-MM-DD HH:MM" id="out_'+i+'" name="out_time[]" value="' + formattedDate + 'T00:00" /> '
+                                    ]).node().id = i;
+                                    t.draw(false);
+                                }
 
                             //loop through the response and fill the table
                             let attendances = res.attendances;

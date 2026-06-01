@@ -1,3 +1,5 @@
 .env
 .env
 public/scripts/config.php
+resources/views/Payroll/payslipProcess/ExtrasPayment_pdf.blade copy.php
+resources/views/Payroll/payslipProcess/ExtrasPayment_pdf.blade.php

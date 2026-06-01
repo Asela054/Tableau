@@ -868,8 +868,9 @@ class AttendanceController extends Controller
         for ($i = 0; $i < sizeof($in_time); $i++) {
 
             $full_date = $month.'-'.$date[$i];
+            $time_part = date('H:i', strtotime($in_time[$i]));
 
-            if (($in_time[$i] != '') && ($in_time[$i] != $existing_time_stamp_in_rfc[$i])) {
+            if (($in_time[$i] != '') && ($in_time[$i] != $existing_time_stamp_in_rfc[$i])&& ($time_part != '00:00')) {
 
                 $full_time_in = $in_time[$i];
 
@@ -927,7 +928,9 @@ class AttendanceController extends Controller
 
             $full_date = $month.'-'.$date[$i];
 
-            if (($out_time[$i] != '') && ($out_time[$i] != $existing_time_stamp_out_rfc[$i])) {
+             $time_part = date('H:i', strtotime($out_time[$i]));
+
+            if (($out_time[$i] != '') && ($out_time[$i] != $existing_time_stamp_out_rfc[$i])&& ($time_part != '00:00')) {
 
                 $full_time_out = $out_time[$i];
 
