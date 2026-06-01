@@ -33,6 +33,10 @@ $previous_month_date = date('Y-m-d', strtotime('-1 month'));
 
 $extraWhere = "employees.deleted = 0";
 
+if(!empty($_POST['company'])) {
+    $company = $_POST['company'];
+    $extraWhere .= " AND employees.emp_company = '$company'";
+}
 if (!empty($_POST['department'])) {
     $department = $_POST['department'];
     $extraWhere .= " AND departments.id = '$department'";

@@ -13,6 +13,7 @@ class MeterReading extends Model
         'date',
         'count',
         'status',
+        'approve_status',
         'created_by',
         'updated_by',
         'created_at',

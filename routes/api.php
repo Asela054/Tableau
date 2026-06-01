@@ -99,3 +99,6 @@ Route::middleware('auth:api')->group(function () {
 Route::post('v1/gettimesheet', ['uses' => '\App\Http\Controllers\Api\V1MainController@attendance_list_for_month_edit', 'as' => 'gettimesheet']); 
 Route::post('v1/Leaverequestdetails', ['uses' => '\App\Http\Controllers\Api\V1MainController@getemployeeleaverequest', 'as' => 'Leaverequestdetails']); 
 Route::post('v1/GetApprovepersons', ['uses' => '\App\Http\Controllers\Api\V1MainController@Getapprovepersons', 'as' => 'GetApprovepersons']);
+
+//attendance_sync_api
+Route::post('/attendancesyncAPI', ['uses' => '\App\Http\Controllers\AttendanceSyncAPIController@index', 'as' => 'attendancesyncAPI']);

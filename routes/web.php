@@ -1501,6 +1501,14 @@ Route::post('/approvemeterreading' ,'MeterReadingApproveController@approvemeterr
 Route::get('/timestampreport' ,'RpttimestampsController@index')->name('timestampreport');
 Route::get('/generate_timestamp_report' ,'RpttimestampsController@generate_timestamp_report')->name('generate_timestamp_report');
 
+//meter reading count details controller
+Route::resource('MeterReading', 'MeterReadingDetailController');
+Route::get('MeterReading',['uses' => 'MeterReadingDetailController@index', 'as' => 'MeterReading']);
+Route::get('MeterReadinglist', 'MeterReadingDetailController@readinglist')->name('MeterReadinglist'); 
+Route::post('addMeterReading',['uses' => 'MeterReadingDetailController@store', 'as' => 'addMeterReading']); 
+Route::post('MeterReading/update', 'MeterReadingDetailController@update')->name('MeterReading.update');
+Route::get('MeterReading/destroy/{id}', 'MeterReadingDetailController@destroy');
+
 Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');
     Artisan::call('config:clear');

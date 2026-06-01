@@ -11,6 +11,7 @@ $columns = array(
     array('db' => 'meter_reading_count.emp_id', 'dt' => 'emp_id', 'field' => 'emp_id'),
     array('db' => 'meter_reading_count.date', 'dt' => 'date', 'field' => 'date'),
     array('db' => 'employees.emp_name_with_initial', 'dt' => 'emp_name_with_initial', 'field' => 'emp_name_with_initial'),
+    array('db' => 'COALESCE(departments.name, "")', 'dt' => 'department_name', 'field' => 'department_name', 'as' => 'department_name'),
     array('db' => 'meter_reading_count.count', 'dt' => 'count', 'field' => 'count'),
 );
 

@@ -730,7 +730,7 @@ $(document).ready(function () {
         }
     });
 
-    function load_dt(department, employee, location, from_date, to_date){
+    function load_dt(company, department, employee, location, from_date, to_date){
         $('#emptable').DataTable({
             lengthMenu: [[10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"]],
             dom: 'lBfrtip',
@@ -758,6 +758,7 @@ $(document).ready(function () {
                 url: scripturl + "/employee_list.php",
                 type: "POST",
                 data: {
+                    company: company,
                     department: department,
                     employee: employee,
                     location: location,
@@ -862,7 +863,7 @@ $(document).ready(function () {
         });
     }
 
-    load_dt('', '', '', '', '');
+    load_dt('', '', '', '', '', '');
 
     $('#from_date').on('change', function() {
         let fromDate = $(this).val();
@@ -881,8 +882,9 @@ $(document).ready(function () {
         let location = $('#location_f').val();
         let from_date = $('#from_date').val();
         let to_date = $('#to_date').val();
+        let company = $('#company_f').val();
 
-        load_dt(department, employee, location, from_date, to_date);
+        load_dt(company, department, employee, location, from_date, to_date);
     });
 
     document.getElementById('btn-clear').addEventListener('click', function() {

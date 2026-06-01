@@ -119,12 +119,15 @@
   @if(auth()->user()->can('meter-reading-list')
   || auth()->user()->can('meter-reading-Approve-list'))
   <div class="dropdown">
-    <a  role="button" data-toggle="dropdown" class="btn navbtncolor" data-target="#" href="#" id="meterreading">
+    <a  role="button" data-toggle="dropdown" class="btn navbtncolor" href="#" id="meterreading">
       Meter Reading <span class="caret"></span></a>
         <ul class="dropdown-menu multi-level dropdownmenucolor" role="menu" aria-labelledby="dropdownMenu">
           @can('meter-reading-list')
-            <li><a class="dropdown-item" href="{{ route('meterreadingcount')}}">Meter Reading Count</a></li>
-            @endcan
+          <li><a class="dropdown-item" href="{{ route('MeterReading')}}">Meter Reading</a></li>
+          @endcan
+          @can('meter-reading-list')
+          <li><a class="dropdown-item" href="{{ route('meterreadingcount')}}">Meter Reading Count</a></li>
+          @endcan
           @can('meter-reading-Approve-list')
            <li><a class="dropdown-item" href="{{ route('meterreadingapprove')}}">Meter Reading Approve</a></li>
           @endcan
