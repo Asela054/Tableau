@@ -74,7 +74,7 @@ class BankBranchController extends Controller
 
         $rules = array(
             'name' => 'required',
-            'code' => 'required|unique:bank_branches,code|max:3',
+            'code' => 'required|max:3|unique:bank_branches,code,NULL,id,bankcode,' . $request->input('bankcode'),
         );
 
         $error = Validator::make($request->all(), $rules);
@@ -118,7 +118,7 @@ class BankBranchController extends Controller
 
         $rules = array(
             'name' => 'required',
-            'code' => 'required | max:3',
+            'code' => 'required|max:3|unique:bank_branches,code,' . $request->hidden_id . ',id,bankcode,' . $request->input('bankcode'),
         );
 
         $error = Validator::make($request->all(), $rules);
@@ -169,6 +169,41 @@ class BankBranchController extends Controller
                 ->skip($offset)
                 ->take($resultCount)
                 ->get([DB::raw('id as id'),DB::raw('branch as text')]);
+
+            $count = Bank_branch::where('status', '1')
+                ->where('bankcode',"$bankcode")
+                ->count();
+            $endCount = $offset + $resultCount;
+            $morePages = $endCount < $count;
+
+            $results = array(
+                "results" => $breeds,
+                "pagination" => array(
+                    "more" => $morePages
+                )
+            );
+
+            return response()->json($results);
+        }
+    }
+    
+    //Branch List get with code for select2
+    public function branch_list2(Request $request){
+        if ($request->ajax())
+        {
+            $page = Input::get('page');
+            $bankcode = Input::get('bank');
+            $resultCount = 25;
+
+            $offset = ($page - 1) * $resultCount;
+
+            $breeds = Bank_branch::where('branch', 'LIKE',  '%' . Input::get("term"). '%')
+                ->where('status','1')
+                ->where('bankcode',"$bankcode")
+                ->orderBy('code')
+                ->skip($offset)
+                ->take($resultCount)
+                ->get([DB::raw('code as id'),DB::raw('branch as text')]);
 
             $count = Bank_branch::where('status', '1')
                 ->where('bankcode',"$bankcode")
