@@ -327,14 +327,19 @@
 
                     $('#dt_head_month').html('<th>Emp ID</th> ' +
                         '<th>Emp Name</th>' +
+                        '<th>Location</th> ' +
+                        '<th>Department</th> '+
                         '<th>Month</th> ' +
                         '<th>Work Days</th> ' +
                         '<th>Leave Days</th>' +
                         '<th>No Pay Days</th>' +
                         '<th>O.T. Hours</th> ' +
+                        '<th>O.T. Hours Rate </th> ' +
+                        '<th>O.T. Hours Amount</th> ' +
                         '<th>Double O.T. Hours</th> ' +
-                        '<th>Location</th> ' +
-                        '<th>Department</th> ' );
+                       '<th>Double O.T. Hours Rate</th> ' +
+                        '<th>Double O.T. Hours Amount</th> ' +
+                        '<th>Total</th> ');
 
                     $('#ot_report_monthly_dt').DataTable({
                         "columnDefs": [
@@ -381,14 +386,19 @@
                         columns: [
                             { data: 'emp_id' },
                             { data: 'employee_display' },
+                            { data: 'b_location' },
+                            { data: 'dept_name' },
                             { data: 'month' },
                             { data: 'work_days' },
                             { data: 'leave_days' },
                             { data: 'no_pay_days' },
                             { data: 'normal_rate_otwork_hrs' },
+                            { data: 'normal_rate_otwork_hrsrate' },
+                            { data: 'normal_rate_otwork_amount' },
                             { data: 'double_rate_otwork_hrs' },
-                            { data: 'b_location' },
-                            { data: 'dept_name' }
+                            { data: 'double_rate_otwork_hrsrate' },
+                            { data: 'double_rate_otwork_amount' },
+                            { data: 'otwork_amount_total' },
                         ],
                         "bDestroy": true,
                         "order": [[ 2, "desc" ]],
